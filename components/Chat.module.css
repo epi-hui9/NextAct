@@ -1,0 +1,46 @@
+.screen {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.column {
+  width: 100%;
+  max-width: var(--reading-width);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Before the conversation: welcome + input, calmly centered. */
+.resting {
+  justify-content: center;
+  gap: 32px;
+  min-height: 100dvh;
+}
+
+/* After it starts: messages fill upward, composer rests near the bottom. */
+.started {
+  justify-content: flex-end;
+  min-height: 100dvh;
+  padding-top: 12vh;
+}
+
+.conversation {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: 32px;
+}
+
+.composerWrap {
+  position: sticky;
+  bottom: 0;
+  padding-bottom: 8px;
+  background: linear-gradient(
+    to top,
+    var(--bg) 72%,
+    color-mix(in srgb, var(--bg) 0%, transparent)
+  );
+}

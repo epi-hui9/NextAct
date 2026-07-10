@@ -1,0 +1,30 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+}
+
+.text {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* The person's own words: quiet, slightly recessed, right-aligned. */
+.user .text {
+  color: var(--text-muted);
+  align-self: flex-end;
+  max-width: 85%;
+  text-align: right;
+}
+
+/* Elizabeth's voice: full ivory, the main reading experience. */
+.assistant .text {
+  color: var(--text);
+}

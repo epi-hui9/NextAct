@@ -1,46 +1,44 @@
-.screen {
-  min-height: 100dvh;
-  display: flex;
-  justify-content: center;
-  padding: 24px;
-}
-
-.column {
-  width: 100%;
-  max-width: var(--reading-width);
+/* Fixed-height application shell: occupies exactly the viewport and never lets
+   the document itself scroll. `dvh` keeps it correct on mobile browser chrome. */
+.shell {
+  height: 100dvh;
+  max-height: 100dvh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
-/* Before the conversation: welcome + input, calmly centered. */
-.resting {
-  justify-content: center;
-  gap: 32px;
-  min-height: 100dvh;
-}
-
-/* After it starts: messages fill upward, composer rests near the bottom. */
-.started {
-  justify-content: flex-end;
-  min-height: 100dvh;
-  padding-top: 12vh;
-}
-
-.conversation {
-  flex: 1;
+/* Non-scrolling header with the two quiet controls. */
+.topbar {
+  flex: 0 0 auto;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-bottom: 32px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
 }
 
-.composerWrap {
-  position: sticky;
-  bottom: 0;
-  padding-bottom: 8px;
-  background: linear-gradient(
-    to top,
-    var(--bg) 72%,
-    color-mix(in srgb, var(--bg) 0%, transparent)
-  );
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-muted);
+  transition:
+    color 200ms ease,
+    background-color 200ms ease;
+}
+
+.iconButton:hover {
+  color: var(--accent);
+  background: rgba(214, 164, 97, 0.06);
+}
+
+/* Flexible region that hosts the conversation surface. */
+.main {
+  flex: 1 1 auto;
+  min-height: 0;
 }

@@ -1,55 +1,90 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useChat } from "@ai-sdk/react";
-import Welcome from "./Welcome";
-import MessageList from "./MessageList";
-import Composer from "./Composer";
+import { useState } from "react";
+import { useThreadStore } from "@/hooks/useThreadStore";
+import Conversation from "./Conversation";
+import HistoryPanel from "./HistoryPanel";
 import styles from "./Chat.module.css";
 
 export default function Chat() {
-  const { messages, sendMessage, status } = useChat();
-  const [input, setInput] = useState("");
+  const store = useThreadStore();
+  const [historyOpen, setHistoryOpen] = useState(false);
 
-  const hasStarted = messages.length > 0;
-  const busy = status === "submitted" || status === "streaming";
-  const endRef = useRef<HTMLDivElement>(null);
+  function handleNew() {
+    setHistoryOpen(false);
+    store.startNew();
+  }
 
-  // Keep the newest words in view as they stream in.
-  useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages, status]);
-
-  function submit() {
-    const text = input.trim();
-    if (!text || busy) return;
-    setInput("");
-    void sendMessage({ text });
+  function handleSelect(id: string) {
+    setHistoryOpen(false);
+    store.select(id);
   }
 
   return (
-    <main className={styles.screen}>
-      <div
-        className={`${styles.column} ${hasStarted ? styles.started : styles.resting}`}
-      >
-        {!hasStarted && <Welcome />}
+    <main className={styles.shell}>
+      <header className={styles.topbar}>
+        <button
+          type="button"
+          className={styles.iconButton}
+          onClick={() => setHistoryOpen(true)}
+          aria-label="Open conversations"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            aria-hidden
+          >
+            <path
+              d="M2.5 4.5h13M2.5 9h13M2.5 13.5h9"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
 
-        {hasStarted && (
-          <div className={styles.conversation}>
-            <MessageList messages={messages} status={status} />
-            <div ref={endRef} />
-          </div>
-        )}
+        <button
+          type="button"
+          className={styles.iconButton}
+          onClick={handleNew}
+          aria-label="New conversation"
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 18 18"
+            fill="none"
+            aria-hidden
+          >
+            <path
+              d="M9 3.5v11M3.5 9h11"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+          </svg>
+        </button>
+      </header>
 
-        <div className={styles.composerWrap}>
-          <Composer
-            value={input}
-            onChange={setInput}
-            onSubmit={submit}
-            disabled={busy}
-          />
-        </div>
+      <div className={styles.main}>
+        <Conversation
+          key={store.activeId || "bootstrap"}
+          threadId={store.activeId || "bootstrap"}
+          initialMessages={store.activeMessages}
+          onCommit={store.commit}
+        />
       </div>
+
+      <HistoryPanel
+        open={historyOpen}
+        summaries={store.summaries}
+        activeId={store.activeId}
+        onSelect={handleSelect}
+        onRemove={store.remove}
+        onClose={() => setHistoryOpen(false)}
+      />
     </main>
   );
 }

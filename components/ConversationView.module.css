@@ -1,0 +1,114 @@
+.surface {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(10px + var(--safe-top)) 20px 10px;
+  padding-left: calc(20px + var(--safe-left));
+  padding-right: calc(20px + var(--safe-right));
+  border-bottom: 1px solid var(--line);
+}
+
+.title {
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.reset {
+  min-height: 36px;
+  padding: 6px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 14px;
+}
+
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.column {
+  width: 100%;
+  max-width: var(--reading-width);
+  margin: 0 auto;
+  padding: 20px 22px 12px;
+  padding-left: calc(22px + var(--safe-left));
+  padding-right: calc(22px + var(--safe-right));
+}
+
+.footer {
+  flex: 0 0 auto;
+  padding: 8px 0 calc(10px + var(--safe-bottom));
+  background: var(--bg);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  padding: 7px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--brand-cashmere) 60%, #ffffff);
+}
+
+.chipError {
+  border-style: dashed;
+}
+
+.chipName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+}
+
+.chipStatus {
+  color: var(--muted);
+}
+
+.retry {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 22px;
+  padding: 14px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: transparent;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.notice {
+  margin: 0 6px 8px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}

@@ -1,11 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // The L1 persona lives in a human-editable Markdown file that is read on the
-  // server at request time. Ensure it is traced into the Vercel bundle so the
-  // chat route can read it in production.
-  outputFileTracingIncludes: {
-    "/api/chat": ["./lib/l1-persona/persona-core.md"],
+  // Do not let stale service-worker or CDN caching hide a new build. The SW is
+  // registered network-first; these headers keep the app shell fresh too.
+  async headers() {
+    return [
+      {
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+        ],
+      },
+    ];
   },
 };
 

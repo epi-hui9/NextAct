@@ -1,8 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
+import ServiceWorker from "@/components/ServiceWorker";
 
-// Serif for the welcome line / headings — warm, optical-size editorial.
+// Warm editorial serif for the greeting and headings.
 const fraunces = Fraunces({
   subsets: ["latin"],
   display: "swap",
@@ -18,13 +19,29 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Beyond the Title",
-  description: "A quiet place to think.",
+  title: "NextAct",
+  description: "A private space to turn a lifetime of judgment into a living legacy.",
+  applicationName: "NextAct",
+  manifest: "/manifest.webmanifest",
   robots: { index: false, follow: false },
+  appleWebApp: {
+    capable: true,
+    title: "NextAct",
+    statusBarStyle: "default",
+  },
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#100f0d",
+  themeColor: "#10192B",
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  // Keep the layout stable; the composer handles the keyboard explicitly.
+  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -34,7 +51,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <ServiceWorker />
+      </body>
     </html>
   );
 }

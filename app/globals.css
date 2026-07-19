@@ -1,15 +1,30 @@
 :root {
-  --bg: #100f0d; /* near-black, warm */
-  --surface: #191712; /* raised panels, input */
-  --border: #2a2621; /* hairline borders */
-  --text: #ece6db; /* warm ivory */
-  --text-muted: #928a7b; /* secondary text */
-  --accent: #d6a461; /* lamplight amber — the ONE accent */
-  --accent-dim: #8a6e44; /* pressed/hover amber */
+  /* Brand Color 4 — the ONLY palette. No other UI colors are permitted. */
+  --brand-navy: #10192b;
+  --brand-mist: #a9afb8;
+  --brand-cashmere: #faf9f7;
+  --brand-gray: #7a7d85;
 
-  --reading-width: 640px;
+  /* Semantic mapping. Hierarchy comes from opacity, scale, and borders — never
+     from new hues. */
+  --bg: var(--brand-cashmere);
+  --ink: var(--brand-navy);
+  --ink-soft: color-mix(in srgb, var(--brand-navy) 62%, var(--brand-cashmere));
+  --muted: var(--brand-gray);
+  --line: color-mix(in srgb, var(--brand-mist) 55%, var(--brand-cashmere));
+  --line-strong: var(--brand-mist);
+  --surface: color-mix(in srgb, var(--brand-cashmere) 92%, var(--brand-navy) 2%);
+  --field: #ffffff; /* implicit white for input legibility only */
 
-  color-scheme: dark;
+  --reading-width: 620px;
+  --tap: 44px;
+
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+
+  color-scheme: light;
 }
 
 *,
@@ -23,46 +38,49 @@ body {
   margin: 0;
   padding: 0;
   background: var(--bg);
-  color: var(--text);
+  color: var(--ink);
+  /* Never allow sideways scroll on iPhone. */
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 body {
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 16px;
-  line-height: 1.7;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100dvh;
+  overscroll-behavior-y: none;
 }
 
-/* The serif, used only for the welcome line and any true headings. */
 .serif {
   font-family: var(--font-fraunces), Georgia, serif;
   font-optical-sizing: auto;
 }
 
-/* Selection stays quiet and warm. */
 ::selection {
-  background: var(--accent-dim);
-  color: var(--bg);
+  background: color-mix(in srgb, var(--brand-mist) 70%, transparent);
+  color: var(--ink);
 }
 
-/* Single amber focus ring, 1px, no glow. */
 :where(button, textarea, input, a):focus-visible {
-  outline: 1px solid var(--accent);
+  outline: 2px solid var(--brand-navy);
   outline-offset: 2px;
 }
 
-textarea {
+textarea,
+input {
   font-family: inherit;
-  font-size: inherit;
-  line-height: 1.7;
-  color: var(--text);
-  caret-color: var(--accent);
+  font-size: 16px; /* >=16px stops iOS Safari auto-zoom on focus */
+  line-height: 1.55;
+  color: var(--ink);
+  caret-color: var(--brand-navy);
 }
 
-textarea::placeholder {
-  color: var(--text-muted);
+textarea::placeholder,
+input::placeholder {
+  color: var(--muted);
 }
 
 button {

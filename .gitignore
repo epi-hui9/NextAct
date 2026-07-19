@@ -32,3 +32,12 @@ next-env.d.ts
 
 # vercel
 .vercel
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/
+
+# local demo data
+/.data/

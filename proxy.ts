@@ -20,6 +20,13 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  // Guard the chat endpoint. `/api/auth` stays open for the gate submission.
-  matcher: ["/api/chat/:path*"],
+  // Guard client-owned endpoints. `/api/auth` stays open for the gate
+  // submission. Each route also re-checks the session as defense in depth.
+  matcher: [
+    "/api/chat/:path*",
+    "/api/state/:path*",
+    "/api/legacy/:path*",
+    "/api/upload/:path*",
+    "/api/transcribe/:path*",
+  ],
 };

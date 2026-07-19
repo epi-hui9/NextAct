@@ -1,31 +1,112 @@
-.composer {
+.wrap {
   width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  transition: border-color 300ms ease;
+}
+
+.recording {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  padding: 4px 6px 10px;
+}
+
+.pulse {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--brand-navy);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.85);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  width: 100%;
+  background: var(--field);
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  padding: 6px 6px 6px 8px;
+  transition: border-color 200ms ease;
 }
 
 .composer:focus-within {
-  border-color: var(--accent-dim);
+  border-color: var(--brand-navy);
+}
+
+.iconBtn,
+.sendBtn {
+  flex: 0 0 auto;
+  width: var(--tap);
+  height: var(--tap);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink-soft);
+  transition: background 160ms ease, color 160ms ease, opacity 160ms ease;
+}
+
+.iconBtn:disabled,
+.sendBtn:disabled {
+  opacity: 0.35;
+}
+
+.iconBtn:not(:disabled):active {
+  background: color-mix(in srgb, var(--brand-mist) 40%, transparent);
+}
+
+.stop {
+  color: var(--brand-navy);
+}
+
+.sendBtn {
+  background: var(--brand-navy);
+  color: var(--brand-cashmere);
+}
+
+.sendBtn:disabled {
+  background: var(--brand-mist);
+  color: var(--brand-cashmere);
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .textarea {
-  width: 100%;
-  /* Backstop for the JS-controlled max height. Overflow is toggled in JS so the
-     scrollbar only appears once content exceeds this height. */
-  max-height: 200px;
+  flex: 1 1 auto;
+  min-width: 0;
+  max-height: 160px;
+  align-self: center;
   background: transparent;
   border: none;
   resize: none;
   overflow-y: hidden;
-  padding: 0;
+  padding: 10px 2px;
   margin: 0;
   display: block;
-  /* Thin, unobtrusive scrollbar for the rare max-height case. */
   scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
+  scrollbar-color: var(--line-strong) transparent;
 }
 
 .textarea:focus {

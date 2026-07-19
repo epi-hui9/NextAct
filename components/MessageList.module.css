@@ -1,7 +1,7 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 22px;
   width: 100%;
 }
 
@@ -14,17 +14,25 @@
   margin: 0;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+  font-size: 18px;
+  line-height: 1.55;
 }
 
-/* The person's own words: quiet, slightly recessed, right-aligned. */
+/* The person's own words: a soft navy bubble, right-aligned. */
+.user {
+  align-items: flex-end;
+}
+
 .user .text {
-  color: var(--text-muted);
-  align-self: flex-end;
+  background: color-mix(in srgb, var(--brand-navy) 8%, var(--brand-cashmere));
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-radius: 18px 18px 4px 18px;
+  padding: 12px 16px;
   max-width: 85%;
-  text-align: right;
 }
 
-/* Elizabeth's voice: full ivory, the main reading experience. */
+/* The companion's voice: full-width, primary reading experience. */
 .assistant .text {
-  color: var(--text);
+  color: var(--ink);
 }

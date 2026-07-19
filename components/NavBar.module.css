@@ -1,0 +1,48 @@
+.nav {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: stretch;
+  gap: 4px;
+  padding: 6px 8px calc(6px + var(--safe-bottom));
+  padding-left: calc(8px + var(--safe-left));
+  padding-right: calc(8px + var(--safe-right));
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--brand-cashmere) 88%, transparent);
+  backdrop-filter: saturate(1.1) blur(8px);
+}
+
+.item {
+  flex: 1 1 0;
+  min-height: var(--tap);
+  min-width: var(--tap);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  color: var(--muted);
+  transition: color 200ms ease, background 200ms ease;
+}
+
+.item.active {
+  color: var(--ink);
+}
+
+.icon {
+  display: inline-flex;
+  opacity: 0.9;
+}
+
+.item.active .icon {
+  opacity: 1;
+}
+
+.label {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}

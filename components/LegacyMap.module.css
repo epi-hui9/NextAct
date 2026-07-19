@@ -1,0 +1,140 @@
+.scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.column {
+  width: 100%;
+  max-width: var(--reading-width);
+  margin: 0 auto;
+  padding: calc(28px + var(--safe-top)) 22px 40px;
+  padding-left: calc(22px + var(--safe-left));
+  padding-right: calc(22px + var(--safe-right));
+}
+
+.heading {
+  font-size: 26px;
+  font-weight: 400;
+  margin: 0 0 4px;
+}
+
+.sub {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0 0 22px;
+}
+
+/* One coherent landscape: a single panel split by hairlines, not cards. */
+.map {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--line-strong);
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.region {
+  position: relative;
+  min-height: 108px;
+  display: flex;
+  align-items: flex-end;
+  padding: 12px;
+  border: none;
+  background: var(--brand-cashmere);
+  text-align: left;
+  overflow: hidden;
+}
+
+/* Odd regions taller to give the landscape an organic, non-grid feel. */
+.region:nth-child(4n + 1),
+.region:nth-child(4n) {
+  min-height: 132px;
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  background: var(--brand-navy);
+  pointer-events: none;
+}
+
+.regionLabel {
+  position: relative;
+  font-size: 14px;
+  line-height: 1.3;
+  font-weight: 500;
+  z-index: 1;
+}
+
+.detail {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  overflow-y: auto;
+}
+
+.detailInner {
+  max-width: var(--reading-width);
+  margin: 0 auto;
+  padding: calc(24px + var(--safe-top)) 22px 40px;
+}
+
+.back {
+  min-height: 44px;
+  padding: 8px 0;
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 16px;
+}
+
+.detailTitle {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 6px 0 20px;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.entries {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.entry {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.entryTitle {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+
+.entryContent {
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0 0 8px;
+  color: var(--ink-soft);
+}
+
+.entryDate {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0;
+}

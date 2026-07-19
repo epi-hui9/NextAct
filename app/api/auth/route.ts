@@ -21,11 +21,19 @@ export async function POST(req: Request) {
     );
   }
 
+  // Mark the cookie Secure only on real HTTPS, so same-WiFi iPhone testing over
+  // a plain http LAN URL still works. The gate is a soft door, not a security
+  // boundary; over HTTPS the cookie is Secure as expected.
+  const proto = req.headers.get("x-forwarded-proto");
+  const isHttps = proto
+    ? proto.split(",")[0].trim() === "https"
+    : new URL(req.url).protocol === "https:";
+
   const token = await createSessionToken();
   const res = NextResponse.json({ ok: true });
   res.cookies.set(AUTH_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isHttps,
     sameSite: "lax",
     path: "/",
     maxAge: COOKIE_MAX_AGE,

@@ -4,8 +4,8 @@
 
 1. Create one Supabase project (shared app, private per-user vaults).
 2. Run migrations in order:
-   - `supabase/migrations/0001_init.sql`
-   - `supabase/migrations/0002_round2_vaults.sql`
+   - `03-supabase/migrations/0001_init.sql`
+   - `03-supabase/migrations/0002_round2_vaults.sql`
 3. In Auth settings: disable public signup. Invite Mio, Elizabeth, and George with email/password.
 4. Create a Vercel project from this GitHub repository.
 5. Set production environment variables from `.env.example` (never commit values).

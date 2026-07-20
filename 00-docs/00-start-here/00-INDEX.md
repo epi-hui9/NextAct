@@ -18,7 +18,6 @@ If you are new to this repository, read in this order:
 | 11 | [11-rounds](./11-rounds/) | Sprint / round execution history |
 | 12 | [12-specs](./12-specs/) | Historical product prompts |
 
-Also see [03-REPO_ORGANIZATION.md](./03-REPO_ORGANIZATION.md).
+Repo layout (code + docs): [03-REPO_ORGANIZATION.md](./03-REPO_ORGANIZATION.md) and root [`README.md`](../../README.md).
 
-Product name: **NextAct** (Client Instrument).  
-GitHub: `https://github.com/epi-hui9/NextAct`.
+Product: **NextAct**. GitHub: `https://github.com/epi-hui9/NextAct`.

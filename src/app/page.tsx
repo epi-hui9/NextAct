@@ -32,7 +32,7 @@ export default async function Page() {
           </p>
           <p style={{ color: "#7C8798", lineHeight: 1.5 }}>
             This private space needs Supabase credentials before it can open.
-            See docs/07-deployment/01-DEPLOYMENT.md.
+            See 00-docs/07-deployment/01-DEPLOYMENT.md.
           </p>
         </div>
       </main>

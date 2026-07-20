@@ -8,18 +8,25 @@ import { join, extname } from "node:path";
 
 const ROOT = process.cwd();
 const ROOTS = [
-  "app",
-  "components",
-  "lib",
-  "hooks",
+  "src",
   "public",
-  "tests",
-  "e2e",
-  "docs/12-specs",
-  "docs/01-product",
-  "docs/04-ai-runtime",
+  "04-tests",
+  "05-e2e",
+  "00-docs/12-specs",
+  "00-docs/01-product",
+  "00-docs/04-ai-runtime",
 ];
-const EXTS = new Set([".ts", ".tsx", ".js", ".mjs", ".css", ".md", ".json", ".html", ".svg"]);
+const EXTS = new Set([
+  ".ts",
+  ".tsx",
+  ".js",
+  ".mjs",
+  ".css",
+  ".md",
+  ".json",
+  ".html",
+  ".svg",
+]);
 
 function walk(entry, out = []) {
   const full = join(ROOT, entry);
@@ -58,8 +65,10 @@ for (const file of files) {
   const rel = file.slice(ROOT.length + 1);
   const lines = text.split(/\r?\n/);
   lines.forEach((line, i) => {
-    if (/\bquiet\b/i.test(line)) quiet.push(`${rel}:${i + 1}:${line.trim().slice(0, 120)}`);
-    if (line.includes("\u2014")) em.push(`${rel}:${i + 1}:${line.trim().slice(0, 120)}`);
+    if (/\bquiet\b/i.test(line))
+      quiet.push(`${rel}:${i + 1}:${line.trim().slice(0, 120)}`);
+    if (line.includes("\u2014"))
+      em.push(`${rel}:${i + 1}:${line.trim().slice(0, 120)}`);
   });
 }
 

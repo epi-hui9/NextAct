@@ -32,4 +32,4 @@ Paper noise on `body` at ~1.5% opacity. Glass only on nav / sheets.
 | Legacy | One interlocking 4×2 SVG jigsaw board |
 | Talk | Prose replies; Past titles ≤ 5 English words |
 
-See also `01-ARCHITECTURE.md` and `docs/00-start-here/01-HANDOFF.md`.
+See also `01-ARCHITECTURE.md` and `00-docs/00-start-here/01-HANDOFF.md`.

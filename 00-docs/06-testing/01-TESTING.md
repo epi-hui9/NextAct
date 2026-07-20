@@ -18,4 +18,4 @@ pnpm lint
 
 ## Real-device checklist
 
-See the Round 2 delivery report / `docs/11-rounds/history/ROUND_2_EXECUTION.md`.
+See the Round 2 delivery report / `00-docs/11-rounds/history/ROUND_2_EXECUTION.md`.

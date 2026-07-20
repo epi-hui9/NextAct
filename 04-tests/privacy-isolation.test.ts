@@ -4,7 +4,7 @@ import { demoAdapter as db } from "@/lib/db/demo-adapter";
 /**
  * Application-level isolation proofs for the demo adapter.
  * Live Supabase RLS must also be verified against a real project
- * (see docs/03-data-privacy/01-DATA_AND_PRIVACY.md). These tests prove the adapter never
+ * (see 00-docs/03-data-privacy/01-DATA_AND_PRIVACY.md). These tests prove the adapter never
  * returns another vault's rows when queried with a different client_id.
  */
 describe("vault isolation (adapter)", () => {

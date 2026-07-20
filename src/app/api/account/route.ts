@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { resolveSession } from "@/lib/session";
-import { db } from "@/lib/db";
-import { createUserClient } from "@/lib/supabase/server";
-import { isExplicitDemoMode, isSupabaseConfigured } from "@/lib/supabase/env";
+import { resolveSession } from "@/features/auth/server/session";
+import { db } from "@/server/db";
+import { createUserClient } from "@/server/supabase/server";
+import { isExplicitDemoMode, isSupabaseConfigured } from "@/server/supabase/env";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

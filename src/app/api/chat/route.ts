@@ -9,17 +9,17 @@ import {
 import type { AnthropicProviderOptions } from "@ai-sdk/anthropic";
 import { z } from "zod";
 import { createHash, randomUUID } from "node:crypto";
-import { modelFor } from "@/lib/ai/gateway";
-import { calculatorTool } from "@/lib/ai/calculator";
-import { buildConversationSystem } from "@/lib/ai/prompt";
-import { routeEffort } from "@/lib/ai/reasoning";
-import { capWords } from "@/lib/ai/output-policy";
-import { checkOrdinaryResponse } from "@/lib/memory/guards";
-import { buildContext } from "@/lib/memory/retrieve";
-import { captureExchange } from "@/lib/memory/capture";
-import { db } from "@/lib/db";
-import { conversationTitle } from "@/lib/conversation/title";
-import { resolveClientId } from "@/lib/session";
+import { modelFor } from "@/server/ai/gateway";
+import { calculatorTool } from "@/server/ai/calculator";
+import { buildConversationSystem } from "@/server/ai/prompt";
+import { routeEffort } from "@/server/ai/reasoning";
+import { capWords } from "@/server/ai/output-policy";
+import { checkOrdinaryResponse } from "@/server/retrieval/guards";
+import { buildContext } from "@/server/retrieval/retrieve";
+import { captureExchange } from "@/server/retrieval/capture";
+import { db } from "@/server/db";
+import { conversationTitle } from "@/features/conversation/title";
+import { resolveClientId } from "@/features/auth/server/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { db } from "@/lib/db";
-import { resolveSession } from "@/lib/session";
+import { db } from "@/server/db";
+import { resolveSession } from "@/features/auth/server/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

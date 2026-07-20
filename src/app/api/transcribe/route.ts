@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { resolveClientId } from "@/lib/session";
+import { resolveClientId } from "@/features/auth/server/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

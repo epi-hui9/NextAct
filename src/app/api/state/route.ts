@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { resolveSession } from "@/lib/session";
-import { getStoryState } from "@/lib/story/service";
-import { getLegacyUpdate } from "@/lib/legacy/service";
-import { treeStageFromProgress, TREE_STAGE_LABELS } from "@/lib/story/tree";
+import { db } from "@/server/db";
+import { resolveSession } from "@/features/auth/server/session";
+import { getStoryState } from "@/features/journey/story/service";
+import { getLegacyUpdate } from "@/features/legacy/service";
+import { treeStageFromProgress, TREE_STAGE_LABELS } from "@/features/journey/story/tree";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

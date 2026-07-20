@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { AUTH_COOKIE, verifySessionToken } from "@/lib/auth";
+import { AUTH_COOKIE, verifySessionToken } from "@/server/security/auth";
 
 /**
  * Protects client-owned API routes. Accepts either a Supabase session

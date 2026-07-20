@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
-import { resolveClientId } from "@/lib/session";
-import { db } from "@/lib/db";
+import { resolveClientId } from "@/features/auth/server/session";
+import { db } from "@/server/db";
 import {
   clientUploadPath,
   isTextExt,
   validateUpload,
-} from "@/lib/files/validate";
-import { storeObject } from "@/lib/files/storage";
-import { extractFromBuffer } from "@/lib/files/extract";
-import { chunkText } from "@/lib/files/chunk";
-import { computeStatus, STATUS_SCORE } from "@/lib/story/config";
+} from "@/server/files/validate";
+import { storeObject } from "@/server/files/storage";
+import { extractFromBuffer } from "@/server/files/extract";
+import { chunkText } from "@/server/files/chunk";
+import { computeStatus, STATUS_SCORE } from "@/features/journey/story/config";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

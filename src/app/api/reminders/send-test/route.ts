@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import webpush from "web-push";
-import { db } from "@/lib/db";
-import { resolveSession } from "@/lib/session";
-import { getVapidCredentials, isVapidConfigured } from "@/lib/push/vapid";
+import { db } from "@/server/db";
+import { resolveSession } from "@/features/auth/server/session";
+import { getVapidCredentials, isVapidConfigured } from "@/features/reminders/vapid";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

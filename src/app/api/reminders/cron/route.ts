@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import webpush from "web-push";
-import { createServiceClient } from "@/lib/supabase/server";
-import { getVapidCredentials, isVapidConfigured } from "@/lib/push/vapid";
-import { localDateAndHour, shouldSendReminder } from "@/lib/push/scheduler";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
+import { createServiceClient } from "@/server/supabase/server";
+import { getVapidCredentials, isVapidConfigured } from "@/features/reminders/vapid";
+import { localDateAndHour, shouldSendReminder } from "@/features/reminders/scheduler";
+import { isSupabaseConfigured } from "@/server/supabase/env";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

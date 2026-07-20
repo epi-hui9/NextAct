@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Newsreader } from "next/font/google";
-import "./globals.css";
-import ServiceWorker from "@/components/ServiceWorker";
+import "@/styles/globals.css";
+import ServiceWorker from "@/components/ui/ServiceWorker";
 
 const newsreader = Newsreader({
   subsets: ["latin"],
@@ -24,8 +24,8 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
   },
   icons: {
-    icon: "/icon-192.png",
-    apple: "/apple-touch-icon.png",
+    icon: "/icons/icon-192.png",
+    apple: "/icons/apple-touch-icon.png",
   },
 };
 

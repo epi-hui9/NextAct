@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { db } from "@/lib/db";
-import { displayConversationTitle } from "@/lib/conversation/title";
-import { resolveClientId } from "@/lib/session";
+import { db } from "@/server/db";
+import { displayConversationTitle } from "@/features/conversation/title";
+import { resolveClientId } from "@/features/auth/server/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

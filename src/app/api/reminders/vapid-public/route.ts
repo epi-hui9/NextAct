@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getVapidPublicKey, isVapidConfigured } from "@/lib/push/vapid";
+import { getVapidPublicKey, isVapidConfigured } from "@/features/reminders/vapid";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

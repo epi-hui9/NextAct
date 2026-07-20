@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createUserClient } from "@/lib/supabase/server";
+import { createUserClient } from "@/server/supabase/server";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

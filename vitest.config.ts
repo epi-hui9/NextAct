@@ -6,13 +6,13 @@ export default defineConfig({
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
       "server-only": fileURLToPath(
-        new URL("./04-tests/server-only-stub.ts", import.meta.url),
+        new URL("./tests/integration/server-only-stub.ts", import.meta.url),
       ),
     },
   },
   test: {
     environment: "node",
-    include: ["04-tests/**/*.test.ts"],
+    include: ["tests/integration/**/*.test.ts"],
     env: {
       NEXTACT_TEST_ADAPTER: "1",
     },

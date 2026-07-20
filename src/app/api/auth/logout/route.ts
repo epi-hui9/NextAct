@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { isSupabaseConfigured, isExplicitDemoMode } from "@/lib/supabase/env";
-import { createUserClient } from "@/lib/supabase/server";
-import { AUTH_COOKIE } from "@/lib/auth";
+import { isSupabaseConfigured, isExplicitDemoMode } from "@/server/supabase/env";
+import { createUserClient } from "@/server/supabase/server";
+import { AUTH_COOKIE } from "@/server/security/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

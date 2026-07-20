@@ -1,10 +1,10 @@
-import { resolveSession } from "@/lib/session";
+import { resolveSession } from "@/features/auth/server/session";
 import {
   isExplicitDemoMode,
   isSupabaseConfigured,
-} from "@/lib/supabase/env";
-import AuthGate from "@/components/AuthGate";
-import AppShell from "@/components/AppShell";
+} from "@/server/supabase/env";
+import AuthGate from "@/features/auth/components/AuthGate";
+import AppShell from "@/components/ui/AppShell";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +32,7 @@ export default async function Page() {
           </p>
           <p style={{ color: "#7C8798", lineHeight: 1.5 }}>
             This private space needs Supabase credentials before it can open.
-            See 00-docs/07-deployment/01-DEPLOYMENT.md.
+            See docs/03-engineering/04-deployment.md.
           </p>
         </div>
       </main>

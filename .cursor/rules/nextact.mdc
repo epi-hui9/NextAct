@@ -1,0 +1,14 @@
+---
+description: NextAct repo conventions for Cursor agents
+globs:
+alwaysApply: true
+---
+
+# NextAct
+
+- Modular monolith: domain code in `src/features/*`, secrets/AI in `src/server/*`.
+- Do not number `src`, `public`, or `supabase`. Numbers are for `docs/` only.
+- Never put service role or AI keys in client code.
+- All model calls go through `src/server/ai` gateway.
+- Banned copy: "quiet" and U+2014 em dash.
+- Prefer updating the matching doc under `docs/` when behavior changes.

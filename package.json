@@ -11,9 +11,9 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "icons": "node 06-scripts/gen-icons.mjs",
+    "icons": "node scripts/gen-icons.mjs",
     "typecheck": "tsc --noEmit",
-    "scan:banned-copy": "node 06-scripts/banned-copy.mjs"
+    "scan:banned-copy": "node scripts/banned-copy.mjs"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "4.0.11",

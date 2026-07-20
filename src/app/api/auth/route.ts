@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { AUTH_COOKIE, createSessionToken, isPasswordCorrect } from "@/lib/auth";
+import { AUTH_COOKIE, createSessionToken, isPasswordCorrect } from "@/server/security/auth";
 
 // 7 days. The gate is a soft door for two viewers, not a security boundary.
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7;

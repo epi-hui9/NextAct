@@ -2,41 +2,36 @@
 
 A private space where an executive turns a lifetime of judgment into a living legacy.
 
-## Repository map (read this first)
+## Repository map
 
-| # | Path | What it is |
-| --- | --- | --- |
-| 00 | [`00-docs/`](./00-docs/) | All product & engineering documentation |
-| 01 | [`src/`](./src/) | Application source (Next.js App Router) |
-| 02 | [`public/`](./public/) | Static assets, icons, service worker |
-| 03 | [`03-supabase/`](./03-supabase/) | Database migrations & seed SQL |
-| 04 | [`04-tests/`](./04-tests/) | Vitest unit / integration tests |
-| 05 | [`05-e2e/`](./05-e2e/) | Playwright mobile e2e |
-| 06 | [`06-scripts/`](./06-scripts/) | Repo tooling (icons, banned-copy) |
-
-Framework-required names stay as `src/` and `public/` (Next.js will not resolve `01-src` / `02-public`). They are layers **01** and **02** in this map.
-
-### Root config files (why they sit here)
-
-| File | Purpose |
+| Path | What it is |
 | --- | --- |
-| `package.json` / `pnpm-lock.yaml` / `pnpm-workspace.yaml` | Dependencies & scripts |
-| `next.config.ts` / `next-env.d.ts` | Next.js |
-| `tsconfig.json` | TypeScript (`@/*` → `src/*`) |
-| `eslint.config.mjs` / `.prettierrc` / `.prettierignore` | Lint & format |
-| `vitest.config.ts` | Unit tests |
-| `playwright.config.ts` | E2E |
-| `vercel.json` | Production headers / region |
-| `.env.example` | Env template (no secrets) |
-| `.gitignore` | Ignore rules |
+| [`docs/`](./docs/) | Product & engineering docs (numbered reading order) |
+| [`src/`](./src/) | Next.js app, features, server, shared UI |
+| [`public/`](./public/) | Static assets, icons, service worker |
+| [`supabase/`](./supabase/) | Migrations & seed |
+| [`tests/`](./tests/) | Vitest integration + Playwright e2e |
+| [`scripts/`](./scripts/) | Tooling (icons, banned-copy) |
 
-Generated / local only (not source of truth): `node_modules/`, `.next/`, `.vercel/`, `.env.local`, `test-results/`.
+Do **not** number `src`, `public`, or `supabase`. Numbers belong in `docs/`.
+
+### Inside `src/`
+
+| Path | Role |
+| --- | --- |
+| `app/` | Routes, layout, API entrypoints |
+| `features/` | Domain slices: auth, conversation, journey, legacy, reminders, settings |
+| `components/` | Shared `ui/` and `brand/` |
+| `server/` | AI gateway, Supabase, retrieval, DB, files, security |
+| `lib/` | Small shared helpers (`env`, `validation`, `utilities`) |
+| `styles/` | Global CSS tokens |
+| `proxy.ts` | API auth gate |
 
 ## Quick start
 
 ```bash
 pnpm install
-# .env.local: see .env.example
+# .env.local: see .env.example and docs/03-engineering/02-environment-variables.md
 pnpm dev
 ```
 
@@ -46,4 +41,4 @@ pnpm typecheck && pnpm test && pnpm scan:banned-copy && pnpm build
 
 ## Docs entry
 
-Start at [`00-docs/00-start-here/00-INDEX.md`](./00-docs/00-start-here/00-INDEX.md).
+Start at [`docs/00-start-here.md`](./docs/00-start-here.md).

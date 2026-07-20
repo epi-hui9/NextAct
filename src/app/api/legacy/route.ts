@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { resolveClientId } from "@/lib/session";
-import { getLegacyMap } from "@/lib/legacy/service";
+import { resolveClientId } from "@/features/auth/server/session";
+import { getLegacyMap } from "@/features/legacy/service";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

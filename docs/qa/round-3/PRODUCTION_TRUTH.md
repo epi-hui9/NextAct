@@ -70,6 +70,14 @@ Proof:
 
 ## Evidence paths
 
-- Before screenshots (Round 1 baseline, local production build of `main` tip): `docs/qa/round-3/before/`
+- Before screenshots (Round 1 baseline at `f1135d3`, local production build, iPhone 15 Pro viewport):
+  - `docs/qa/round-3/before/01-home.png`
+  - `docs/qa/round-3/before/02-talk-before-focus.png`
+  - `docs/qa/round-3/before/03-talk-composer-focused.png`
+  - `docs/qa/round-3/before/04-legacy-overview.png`
+  - `docs/qa/round-3/before/05-legacy-category-detail.png`
+  - `docs/qa/round-3/before/06-home-identity-state.png`
 - This document: `docs/qa/round-3/PRODUCTION_TRUTH.md`
 - Credential rotation (no secret values): `docs/security/ROUND_3_CREDENTIAL_ROTATION.md`
+
+Note: Screenshots are from a local production build of `f1135d3` (the commit `main` currently points to). They are the best available proxy for “what production serves if Vercel tracks `main`.” A live production URL SHA check via `/api/version` is still required after deploy.

@@ -4,10 +4,14 @@
 }
 
 .track {
-  height: 4px;
+  height: 3px;
   border-radius: 999px;
   background: color-mix(in srgb, var(--brand-mist) 55%, var(--brand-ivory));
   overflow: hidden;
+}
+
+.compact .track {
+  height: 2px;
 }
 
 .fill {
@@ -15,6 +19,14 @@
   border-radius: inherit;
   background: var(--brand-navy);
   transition: width var(--motion-enter) var(--ease-out);
+}
+
+.onDark .track {
+  background: color-mix(in srgb, var(--brand-ivory) 18%, transparent);
+}
+
+.onDark .fill {
+  background: var(--brand-mist);
 }
 
 @media (prefers-reduced-motion: reduce) {

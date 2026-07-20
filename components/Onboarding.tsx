@@ -6,23 +6,34 @@ import TreeMark from "./TreeMark";
 import LockMark from "./LockMark";
 import styles from "./Onboarding.module.css";
 
+/**
+ * North star (Introverted Intuition):
+ * a private vault, simple enough not to overload,
+ * where forty years of judgment become a living legacy,
+ * and the present low becomes a chapter still ahead.
+ */
 const STEPS = [
   {
     kind: "vault" as const,
-    title: "Your vault stays private.",
-    body: "This is a locked space for one person. Your words, files, and Legacy never leave your account, and never cross into anyone else's.",
+    title: "A private space. Yours alone.",
+    body: "NextAct is a locked vault for one executive. Nothing here is shared, compared, or put on display. Zero leakage. Zero audience.",
+  },
+  {
+    kind: "simple" as const,
+    title: "Keep it simple. Hold the long view.",
+    body: "The interface stays spare on purpose. One clear path at a time, so forty years of judgment can settle into focus instead of noise.",
   },
   {
     kind: "tree" as const,
-    title: "Your judgment becomes a living legacy.",
-    body: "As you speak honestly about your story, a living tree grows to mark what you have named.",
-    treeStage: 2 as const,
-  },
-  {
-    kind: "tree" as const,
-    title: "Begin with one honest answer.",
-    body: "There is no checklist. Just one clear prompt, and a conversation that stays with you.",
+    title: "Judgment becomes a living legacy.",
+    body: "What you name here gathers into a visible archive: a tree that grows as your story takes shape, a map of a life still being written.",
     treeStage: 3 as const,
+  },
+  {
+    kind: "horizon" as const,
+    title: "This low point is not the end.",
+    body: "The chapter you are in can turn toward something worth looking forward to. Begin with one honest answer.",
+    treeStage: 4 as const,
   },
 ];
 
@@ -73,11 +84,13 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
               <div className={styles.vaultMark}>
                 <LockMark size={56} />
               </div>
+            ) : current.kind === "simple" ? (
+              <div className={styles.horizonMark} />
             ) : (
-              <TreeMark stage={current.treeStage} size={180} />
+              <TreeMark stage={current.treeStage ?? 3} size={180} />
             )}
           </div>
-          <h1 className={styles.title}>{current.title}</h1>
+          <h1 className={`serif ${styles.title}`}>{current.title}</h1>
           <p className={styles.body}>{current.body}</p>
         </motion.div>
       </AnimatePresence>

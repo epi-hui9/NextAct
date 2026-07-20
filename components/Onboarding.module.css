@@ -52,6 +52,19 @@
   box-shadow: var(--shadow-1);
 }
 
+.horizonMark {
+  width: 120px;
+  height: 64px;
+  border-radius: 999px 999px 0 0;
+  border: 1.5px solid var(--brand-mist);
+  border-bottom: none;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--brand-navy) 10%, transparent),
+    transparent 70%
+  );
+}
+
 .title {
   margin: 0;
   font-size: var(--text-subtitle);

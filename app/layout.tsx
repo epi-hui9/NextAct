@@ -1,6 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { Newsreader } from "next/font/google";
 import "./globals.css";
 import ServiceWorker from "@/components/ServiceWorker";
+
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  variable: "--font-serif",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "NextAct",
@@ -34,7 +43,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={newsreader.variable}>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>

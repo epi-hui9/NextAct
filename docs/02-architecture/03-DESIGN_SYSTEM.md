@@ -1,37 +1,35 @@
-# Design system
+# Design system — The Private Living Archive
 
-NextAct uses CSS design tokens in `app/globals.css`. Do not introduce MUI, Ant Design, or default shadcn skins.
+Visual direction: a private life archive still being written. Brand Color 3 remains; composition and typography carry the emotion.
 
 ## Brand Color 3
 
-| Token | Hex |
+| Role | Hex |
 | --- | --- |
-| Navy | `#0B1F3A` |
-| Mist | `#B7C4D6` |
-| Ivory | `#FAFAF8` |
-| Slate | `#7C8798` |
+| Navy | `#0B1F3A` — titles, primary actions, filled Legacy |
+| Mist | `#B7C4D6` — progress, selected, puzzle stroke |
+| Ivory | `#FAFAF8` — continuous canvas |
+| Slate | `#7C8798` — secondary copy |
 
-## Spacing (4pt grid)
-
-- Page x padding: `20px` (`--page-x`)
-- Section gap: `32px`
-- Tap target: `44px`
-- List row: `56px`
+Paper noise on `body` at ~1.5% opacity. Glass only on nav / sheets.
 
 ## Type
 
-System stack (SF Pro / -apple-system). Scale: 13 / 15 / 17 / 22 / 30. Body 17px, line-height 1.45. Tabular nums for percentages.
+- Controls & body: SF Pro system stack (`13 / 15 / 17 / 22 / 30`)
+- Content moments (Home question, Legacy / Path titles, onboarding): **Newsreader** via `--font-serif`
+- Serif at most once per screen
 
-## Materials
+## Spacing
 
-Glass (`backdrop-filter`) only on bottom nav, sheets, and floating chrome. Content surfaces stay solid ivory/white. Two shadow levels only.
+4pt grid. Page x = 20px. Tap ≥ 44px. Section gap 32px.
 
-## Motion
+## Screens
 
-- Press: scale 0.97, 80ms
-- Enter: fade + 8px rise, 220ms
-- Respect `prefers-reduced-motion`
+| Screen | One protagonist |
+| --- | --- |
+| Home | Serif question + Continue; gear for settings; tree as soft mark |
+| Path | Active stage as navy hero; other stages as timeline directory |
+| Legacy | One interlocking 4×2 SVG jigsaw board |
+| Talk | Prose replies; Past titles ≤ 5 English words |
 
-## App shell
-
-All primary screens render inside `components/AppShell.tsx`: safe areas, scroll region, bottom nav, update banner, account sheet.
+See also `01-ARCHITECTURE.md` and `docs/00-start-here/01-HANDOFF.md`.

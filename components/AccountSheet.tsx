@@ -33,8 +33,12 @@ export default function AccountSheet({
     if (!open) return;
     let cancelled = false;
     Promise.all([
-      fetch("/api/account", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
-      fetch("/api/version", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
+      fetch("/api/account", { cache: "no-store" }).then((r) =>
+        r.ok ? r.json() : null,
+      ),
+      fetch("/api/version", { cache: "no-store" }).then((r) =>
+        r.ok ? r.json() : null,
+      ),
     ]).then(([account, version]) => {
       if (cancelled) return;
       setInfo({
@@ -120,7 +124,9 @@ export default function AccountSheet({
         );
         return;
       }
-      setReminderMsg(data.ok ? "Test reminder sent." : "No subscription on this device yet.");
+      setReminderMsg(
+        data.ok ? "Test reminder sent." : "No subscription on this device yet.",
+      );
     } catch {
       setReminderMsg("I could not send a test reminder.");
     } finally {
@@ -129,37 +135,48 @@ export default function AccountSheet({
   }
 
   return (
-    <div className={styles.overlay} role="dialog" aria-label="Account">
+    <div className={styles.overlay} role="dialog" aria-label="Settings">
       <div className={styles.sheet}>
         <header className={styles.head}>
-          <div>
-            <p className={styles.lock} aria-hidden>
-              <LockMark size={22} />
-            </p>
-            <h2 className={styles.title}>{label}</h2>
-            {info?.email ? <p className={styles.email}>{info.email}</p> : null}
-            <p className={styles.note}>
-              Your conversations and Legacy belong only to this account.
-            </p>
-          </div>
+          <h2 className={styles.headTitle}>Settings</h2>
           <button type="button" className={styles.close} onClick={onClose}>
-            Close
+            Done
           </button>
         </header>
+
+        <section className={styles.identity}>
+          <div className={styles.lock} aria-hidden>
+            <LockMark size={28} />
+          </div>
+          <h3 className={`serif ${styles.title}`}>{label}</h3>
+          {info?.email ? <p className={styles.email}>{info.email}</p> : null}
+          <p className={styles.note}>
+            A locked vault. Your words and Legacy stay with this account alone.
+          </p>
+        </section>
 
         <section className={styles.section}>
           <h3 className={styles.sectionTitle}>Reminders</h3>
           <p className={styles.meta}>
-            {info?.reminderEnabled ? "Enabled for 10:00 AM local time" : "Not enabled yet"}
+            {info?.reminderEnabled
+              ? "On · 10:00 AM local time"
+              : "Off · enable from Home when ready"}
           </p>
-          <button type="button" className={styles.secondary} onClick={() => void testReminder()} disabled={busy}>
-            Send a test reminder
-          </button>
+          {info?.reminderEnabled ? (
+            <button
+              type="button"
+              className={styles.secondary}
+              onClick={() => void testReminder()}
+              disabled={busy}
+            >
+              Send a test reminder
+            </button>
+          ) : null}
           {reminderMsg ? <p className={styles.msg}>{reminderMsg}</p> : null}
         </section>
 
         <section className={styles.section}>
-          <h3 className={styles.sectionTitle}>Change password</h3>
+          <h3 className={styles.sectionTitle}>Password</h3>
           <label className={styles.label}>
             New password
             <input
@@ -171,7 +188,7 @@ export default function AccountSheet({
             />
           </label>
           <label className={styles.label}>
-            Confirm password
+            Confirm
             <input
               className={styles.input}
               type="password"
@@ -192,7 +209,11 @@ export default function AccountSheet({
         </section>
 
         <section className={styles.section}>
-          <button type="button" className={styles.secondary} onClick={onReplayOnboarding}>
+          <button
+            type="button"
+            className={styles.textAction}
+            onClick={onReplayOnboarding}
+          >
             Replay introduction
           </button>
           <p className={styles.meta}>
@@ -200,7 +221,12 @@ export default function AccountSheet({
           </p>
         </section>
 
-        <button type="button" className={styles.danger} onClick={() => void signOut()} disabled={busy}>
+        <button
+          type="button"
+          className={styles.danger}
+          onClick={() => void signOut()}
+          disabled={busy}
+        >
           Sign out
         </button>
       </div>

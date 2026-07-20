@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import TreeMark from "./TreeMark";
+import ProgressBar from "./ProgressBar";
 import type { TreeStage } from "@/lib/story/tree";
 import styles from "./Home.module.css";
 
@@ -14,20 +15,13 @@ interface HomeState {
   treeStage: TreeStage;
   treeSummary: string;
   journeyStage?: string;
-}
-
-function greeting(name: string | null): string {
-  const hour = new Date().getHours();
-  const part =
-    hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-  return name ? `${part}, ${name}.` : `${part}.`;
+  reminderEnabled?: boolean;
 }
 
 export default function Home({
   active,
   nonce,
   preferredName = null,
-  email = null,
   onOpenConversation,
   onOpenLegacy,
   onOpenAccount,
@@ -43,18 +37,27 @@ export default function Home({
   onOpenJourney: () => void;
 }) {
   const [state, setState] = useState<HomeState | null>(null);
+  const [reminderOn, setReminderOn] = useState(false);
   const reduce = useReducedMotion();
 
   useEffect(() => {
     if (!active) return;
     let cancelled = false;
-    fetch("/api/state", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (!cancelled && data) setState(data as HomeState);
+    Promise.all([
+      fetch("/api/state", { cache: "no-store" }).then((r) =>
+        r.ok ? r.json() : null,
+      ),
+      fetch("/api/account", { cache: "no-store" }).then((r) =>
+        r.ok ? r.json() : null,
+      ),
+    ])
+      .then(([data, account]) => {
+        if (cancelled) return;
+        if (data) setState(data as HomeState);
+        if (account?.reminderEnabled) setReminderOn(true);
       })
       .catch(() => {
-        /* keep calm on error */
+        /* keep calm */
       });
     return () => {
       cancelled = true;
@@ -63,82 +66,86 @@ export default function Home({
 
   const prompt =
     state?.oneSmallThing ??
-    "When you have a moment, tell me what is on your mind.";
+    "What feels most true to say about this chapter?";
   const treeStage = state?.treeStage ?? 0;
   const progress = Math.max(
     0,
     Math.min(100, Math.round(state?.storyProgress ?? 0)),
   );
   const name = state?.preferredName ?? preferredName;
-  const identityLabel = name ? `${name}'s private space` : "Your private space";
-  const treeLabel = state?.treeSummary ?? "Seed";
 
   return (
     <div className={styles.scroll}>
       <div className={styles.column}>
-        <header className={styles.identity}>
+        <header className={styles.top}>
           <button
             type="button"
-            className={styles.identityBtn}
+            className={styles.gear}
             onClick={onOpenAccount}
-            aria-label="Open account"
+            aria-label="Settings"
           >
-            <span className={styles.identityText}>
-              <span className={styles.identityName}>{identityLabel}</span>
-              {email ? <span className={styles.identityEmail}>{email}</span> : null}
-            </span>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+              <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.6" />
+              <path
+                d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M5.9 5.9l1.6 1.6M16.5 16.5l1.6 1.6M18.1 5.9l-1.6 1.6M7.5 16.5l-1.6 1.6"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            </svg>
           </button>
         </header>
 
-        <motion.h1
-          className={`serif ${styles.greeting}`}
+        <button
+          type="button"
+          className={styles.treeBg}
+          onClick={onOpenLegacy}
+          aria-label="Open Living Legacy"
+        >
+          <TreeMark stage={treeStage} size={200} />
+        </button>
+
+        <motion.p
+          className={`serif ${styles.question}`}
           initial={reduce ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
         >
-          {greeting(name)}
-        </motion.h1>
+          {prompt}
+        </motion.p>
 
-        <button
-          type="button"
-          className={styles.treeBtn}
-          onClick={onOpenLegacy}
-          aria-label={`Living legacy tree, ${treeLabel}`}
-        >
-          <TreeMark stage={treeStage} size={168} />
-          <span className={styles.treeCaption}>{treeLabel}</span>
-        </button>
-
-        <button
-          type="button"
-          className={styles.stageBtn}
-          onClick={onOpenJourney}
-          aria-label={`Story stage, ${progress} percent complete`}
-        >
-          <span className={styles.stageLabel}>Story</span>
-          <span className={styles.stagePct}>{progress}%</span>
-        </button>
-
-        <div className={styles.invite}>
-          <p className={styles.inviteLabel}>One small thing for today</p>
-          <p className={styles.inviteText}>{prompt}</p>
-        </div>
+        {name ? <p className={styles.greeting}>For {name}</p> : null}
 
         <button
           type="button"
           className={styles.primary}
           onClick={() => onOpenConversation(prompt)}
         >
-          Continue this reflection
+          Continue
         </button>
 
-        <ReminderOptIn />
+        <button
+          type="button"
+          className={styles.storyTrack}
+          onClick={onOpenJourney}
+          aria-label={`Story progress ${progress} percent`}
+        >
+          <span className={styles.storyMeta}>
+            <span>Story</span>
+            <span className={styles.storyPct}>{progress}%</span>
+          </span>
+          <ProgressBar value={progress} label="Story progress" compact />
+        </button>
+
+        {!reminderOn ? (
+          <ReminderOptIn onEnabled={() => setReminderOn(true)} />
+        ) : null}
       </div>
     </div>
   );
 }
 
-function ReminderOptIn() {
+function ReminderOptIn({ onEnabled }: { onEnabled: () => void }) {
   const [status, setStatus] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -194,7 +201,7 @@ function ReminderOptIn() {
         setStatus("I could not save that reminder. Please try once more.");
         return;
       }
-      setStatus("Your 10:00 AM reminder is on.");
+      onEnabled();
     } catch {
       setStatus("I could not enable reminders just now.");
     } finally {
@@ -210,7 +217,7 @@ function ReminderOptIn() {
         onClick={() => void enable()}
         disabled={busy}
       >
-        Enable my 10:00 AM reminder
+        Enable 10:00 AM reminder
       </button>
       {status ? <p className={styles.reminderStatus}>{status}</p> : null}
     </div>

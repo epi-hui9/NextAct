@@ -39,31 +39,65 @@ export default function Journey({
     };
   }, [active, nonce]);
 
+  const activeStage =
+    JOURNEY_STAGES.find((s) => s.id === ACTIVE_JOURNEY_STAGE_ID) ??
+    JOURNEY_STAGES[0];
+
   return (
     <div className={styles.scroll}>
       <div className={styles.column}>
-        <h1 className={styles.heading}>Nine month path</h1>
-        <ol className={styles.list}>
-          {JOURNEY_STAGES.map((stage) => {
+        <h1 className={`serif ${styles.heading}`}>Nine month path</h1>
+
+        <section className={styles.hero} aria-current="step">
+          <p className={styles.heroEyebrow}>Now</p>
+          <h2 className={styles.heroTitle}>{activeStage.title}</h2>
+          <p className={styles.heroBody}>{activeStage.summary}</p>
+          <div className={styles.heroProgress}>
+            <div className={styles.heroMeta}>
+              <span>Progress</span>
+              <span className={styles.badge}>{storyProgress}%</span>
+            </div>
+            <ProgressBar
+              value={storyProgress}
+              label={`${activeStage.title} progress`}
+              tone="onDark"
+            />
+          </div>
+        </section>
+
+        <ol className={styles.timeline}>
+          {JOURNEY_STAGES.map((stage, index) => {
             const isActive = stage.id === ACTIVE_JOURNEY_STAGE_ID;
-            const pct = isActive ? storyProgress : 0;
             return (
               <li
                 key={stage.id}
-                className={`${styles.item} ${isActive ? styles.active : ""}`}
+                className={`${styles.node} ${isActive ? styles.nodeActive : ""}`}
               >
-                <div className={styles.row}>
-                  <span className={styles.title}>{stage.title}</span>
+                <span className={styles.rail} aria-hidden>
+                  <span className={styles.dot} />
+                  {index < JOURNEY_STAGES.length - 1 ? (
+                    <span className={styles.line} />
+                  ) : null}
+                </span>
+                <div className={styles.nodeBody}>
+                  <div className={styles.nodeRow}>
+                    <span className={styles.nodeTitle}>{stage.title}</span>
+                    {isActive ? (
+                      <span className={styles.badge}>{storyProgress}%</span>
+                    ) : (
+                      <span className={styles.later}>Later</span>
+                    )}
+                  </div>
                   {isActive ? (
-                    <span className={styles.badge}>{pct}%</span>
-                  ) : (
-                    <span className={styles.locked}>Later</span>
-                  )}
+                    <div className={styles.nodeBar}>
+                      <ProgressBar
+                        value={storyProgress}
+                        label={`${stage.title} progress`}
+                        compact
+                      />
+                    </div>
+                  ) : null}
                 </div>
-                <ProgressBar
-                  value={pct}
-                  label={`${stage.title} progress`}
-                />
               </li>
             );
           })}

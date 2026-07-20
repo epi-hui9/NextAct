@@ -14,6 +14,7 @@ export interface SessionIdentity {
   userId: string;
   clientId: string;
   preferredName: string | null;
+  email: string | null;
   onboardingComplete: boolean;
 }
 
@@ -30,43 +31,60 @@ export async function resolveSession(): Promise<SessionIdentity | null> {
     if (!user) return null;
 
     const clientId = user.id;
-    await db.ensureClient(clientId, null);
-    await ensureStoryRows(clientId);
+    try {
+      await db.ensureClient(clientId, null);
+    } catch (err) {
+      console.error("ensureClient failed", err);
+      throw err;
+    }
+    try {
+      await ensureStoryRows(clientId);
+    } catch (err) {
+      console.error("ensureStoryRows failed", err);
+      // Story rows are helpful but must not block sign-in.
+    }
 
-    let profile = await db.getProfile(user.id);
-    if (!profile) {
-      profile = await db.upsertProfile({
-        user_id: user.id,
-        client_id: clientId,
-        preferred_name:
-          typeof user.user_metadata?.preferred_name === "string"
-            ? user.user_metadata.preferred_name
-            : null,
-        timezone: "America/Chicago",
-        reminder_enabled: false,
-      });
-      // Membership row for RLS helpers that use client_memberships.
-      try {
-        const service = await import("@/lib/supabase/server").then((m) =>
-          m.createServiceClient(),
-        );
-        await service.from("client_memberships").upsert(
-          {
-            client_id: clientId,
-            user_id: user.id,
-            role: "owner",
-          },
-          { onConflict: "client_id,user_id" },
-        );
-      } catch {
-        /* membership seed is best-effort when table/policy allows */
+    let profile = null as Awaited<ReturnType<typeof db.getProfile>>;
+    try {
+      profile = await db.getProfile(user.id);
+      if (!profile) {
+        profile = await db.upsertProfile({
+          user_id: user.id,
+          client_id: clientId,
+          preferred_name:
+            typeof user.user_metadata?.preferred_name === "string"
+              ? user.user_metadata.preferred_name
+              : null,
+          timezone: "America/Chicago",
+          reminder_enabled: false,
+        });
       }
+    } catch (err) {
+      console.error("profile bootstrap failed", err);
+      throw err;
+    }
+
+    try {
+      const service = await import("@/lib/supabase/server").then((m) =>
+        m.createServiceClient(),
+      );
+      await service.from("client_memberships").upsert(
+        {
+          client_id: clientId,
+          user_id: user.id,
+          role: "owner",
+        },
+        { onConflict: "client_id,user_id" },
+      );
+    } catch (err) {
+      console.error("membership seed failed", err);
     }
 
     return {
       userId: user.id,
       clientId,
       preferredName: profile.preferred_name,
+      email: user.email ?? null,
       onboardingComplete: profile.onboarding_completed_at != null,
     };
   }
@@ -82,6 +100,7 @@ export async function resolveSession(): Promise<SessionIdentity | null> {
       userId: "demo-user",
       clientId: DEMO_CLIENT_ID,
       preferredName: null,
+      email: null,
       onboardingComplete: true,
     };
   }

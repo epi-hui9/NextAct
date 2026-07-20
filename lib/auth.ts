@@ -3,7 +3,7 @@
  *
  * Uses the Web Crypto API (HMAC-SHA-256) so this module runs in both the Node
  * runtime (route handlers) and the Edge runtime (middleware). The signed token
- * carries no PII — it is just a constant marker signed with `AUTH_SECRET`.
+ * carries no PII: it is just a constant marker signed with `AUTH_SECRET`.
  */
 
 export const AUTH_COOKIE = "btt_access";

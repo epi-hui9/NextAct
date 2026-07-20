@@ -5,6 +5,7 @@ import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import MessageList from "./MessageList";
 import Composer from "./Composer";
+import { clearDraft } from "@/lib/client/draft-store";
 import styles from "./ConversationView.module.css";
 
 interface UploadChip {
@@ -25,27 +26,71 @@ function openerFor(prompt: string | null): UIMessage {
   };
 }
 
+function errorCopy(error: Error | undefined): string {
+  if (!error) {
+    return "Something went wrong. Your words are saved. Tap to try again.";
+  }
+  const msg = error.message || "";
+  if (!navigator.onLine) {
+    return "You appear offline. Your draft stays here until you reconnect.";
+  }
+  if (/session ended|401|unauthorized/i.test(msg)) {
+    return "Your session ended. Sign in again to continue.";
+  }
+  if (/interrupted|504/i.test(msg)) {
+    return "The reply was interrupted. Your words are saved. Tap to try again.";
+  }
+  if (/provider|busy|429/i.test(msg)) {
+    return "The model is busy. Your words are saved. Tap to try again.";
+  }
+  return msg.includes("saved")
+    ? msg
+    : "Something went wrong. Your words are saved. Tap to try again.";
+}
+
 export default function ConversationView({
   conversationId,
   activePrompt,
   onReset,
+  initialDraft = "",
+  onDraftChange,
 }: {
   conversationId: string;
   activePrompt: string | null;
   onReset: () => void;
+  initialDraft?: string;
+  onDraftChange?: (text: string) => void;
 }) {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(initialDraft);
   const [notice, setNotice] = useState<string | null>(null);
   const [uploads, setUploads] = useState<UploadChip[]>([]);
   const lastSentRef = useRef("");
+  const lastIdempotencyRef = useRef<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const seededRef = useRef(false);
+  const reconciledRef = useRef(false);
+
+  useEffect(() => {
+    if (initialDraft && !input) setInput(initialDraft);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialDraft]);
 
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        body: { conversationId, activePrompt: activePrompt ?? undefined },
+        prepareSendMessagesRequest: ({ body, messages, id, trigger, messageId }) => ({
+          body: {
+            ...(body ?? {}),
+            id,
+            messages,
+            trigger,
+            messageId,
+            conversationId,
+            activePrompt: activePrompt ?? undefined,
+            idempotencyKey: lastIdempotencyRef.current ?? undefined,
+          },
+        }),
       }),
     [conversationId, activePrompt],
   );
@@ -63,15 +108,39 @@ export default function ConversationView({
       onError: () => {
         const saved = lastSentRef.current;
         setInput((cur) => cur || saved);
-        setMessages((prev) => {
-          const last = prev[prev.length - 1];
-          if (last?.role === "user") return prev.slice(0, -1);
-          return prev;
-        });
+        // Keep the optimistic user message; reconcile from server next.
+        void reconcile();
       },
     });
 
-  // Seed remote prompt once per conversation id (avoid duplicate openers).
+  const reconcile = useCallback(async () => {
+    try {
+      const res = await fetch(
+        `/api/chat/messages?conversationId=${encodeURIComponent(conversationId)}`,
+        { cache: "no-store" },
+      );
+      if (!res.ok) return;
+      const data = (await res.json()) as {
+        messages: { id: string; role: "user" | "assistant"; content: string }[];
+      };
+      if (!data.messages?.length) return;
+      const remote: UIMessage[] = data.messages.map((m) => ({
+        id: m.id,
+        role: m.role,
+        parts: [{ type: "text" as const, text: m.content }],
+      }));
+      setMessages([openerFor(activePrompt), ...remote]);
+    } catch {
+      /* keep local */
+    }
+  }, [activePrompt, conversationId, setMessages]);
+
+  useEffect(() => {
+    if (reconciledRef.current) return;
+    reconciledRef.current = true;
+    void reconcile();
+  }, [reconcile]);
+
   useEffect(() => {
     if (seededRef.current || !activePrompt) return;
     seededRef.current = true;
@@ -102,16 +171,20 @@ export default function ConversationView({
   }, [notice]);
 
   useEffect(() => {
-    if (error && lastSentRef.current) {
-      setInput((cur) => cur || lastSentRef.current);
-    }
-  }, [error]);
+    onDraftChange?.(input);
+  }, [input, onDraftChange]);
 
   function submit() {
     const text = input.trim();
     if (!text || busy) return;
+    if (!navigator.onLine) {
+      setNotice("You appear offline. Your draft stays here until you reconnect.");
+      return;
+    }
     lastSentRef.current = text;
+    lastIdempotencyRef.current = crypto.randomUUID();
     setInput("");
+    void clearDraft(conversationId);
     clearError();
     void sendMessage({ text });
   }
@@ -119,6 +192,9 @@ export default function ConversationView({
   function retry() {
     const text = lastSentRef.current;
     if (!text || busy) return;
+    if (!lastIdempotencyRef.current) {
+      lastIdempotencyRef.current = crypto.randomUUID();
+    }
     clearError();
     void sendMessage({ text });
   }
@@ -173,6 +249,7 @@ export default function ConversationView({
           className={styles.reset}
           onClick={() => {
             seededRef.current = false;
+            reconciledRef.current = false;
             setMessages([openerFor(activePrompt)]);
             setUploads([]);
             onReset();
@@ -213,8 +290,7 @@ export default function ConversationView({
 
           {error ? (
             <button type="button" className={styles.retry} onClick={retry}>
-              I lost the connection for a moment. Your words are still here.
-              Tap to try again.
+              {errorCopy(error)}
             </button>
           ) : null}
         </div>

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TreeMark from "./TreeMark";
 import type { TreeStage } from "@/lib/story/tree";
+import { LEGACY_SECTIONS, LEGACY_SECTION_LABELS, type LegacySection } from "@/lib/db/types";
 import styles from "./LegacyMap.module.css";
 
 interface MapEntry {
@@ -27,19 +28,37 @@ function fmtDate(ms: number): string {
   });
 }
 
+function slugToSection(slug: string | null): LegacySection | null {
+  if (!slug) return null;
+  const key = slug.replace(/-/g, "_") as LegacySection;
+  return (LEGACY_SECTIONS as readonly string[]).includes(key) ? key : null;
+}
+
+function sectionToSlug(section: string): string {
+  return section.replace(/_/g, "-");
+}
+
 export default function LegacyMap({
   active,
   nonce,
+  sectionSlug,
+  onSectionChange,
 }: {
   active: boolean;
   nonce: number;
+  sectionSlug: string | null;
+  onSectionChange: (slug: string | null) => void;
 }) {
   const [sections, setSections] = useState<MapSection[]>([]);
   const [treeStage, setTreeStage] = useState<TreeStage>(0);
-  const [treeSummary, setTreeSummary] = useState(
-    "Your living legacy begins here",
+  const [storyProgress, setStoryProgress] = useState(0);
+  const [treeSummary, setTreeSummary] = useState("Seed · 0%");
+
+  const selectedKey = slugToSection(sectionSlug);
+  const selected = useMemo(
+    () => sections.find((s) => s.section === selectedKey) ?? null,
+    [sections, selectedKey],
   );
-  const [selected, setSelected] = useState<MapSection | null>(null);
 
   useEffect(() => {
     if (!active) return;
@@ -56,6 +75,9 @@ export default function LegacyMap({
         if (cancelled) return;
         if (legacy?.sections) setSections(legacy.sections as MapSection[]);
         if (state?.treeStage != null) setTreeStage(state.treeStage as TreeStage);
+        if (typeof state?.storyProgress === "number") {
+          setStoryProgress(state.storyProgress);
+        }
         if (state?.treeSummary) setTreeSummary(String(state.treeSummary));
       })
       .catch(() => {
@@ -66,6 +88,44 @@ export default function LegacyMap({
     };
   }, [active, nonce]);
 
+  useEffect(() => {
+    if (!sectionSlug) return;
+    if (slugToSection(sectionSlug) == null) onSectionChange(null);
+  }, [sectionSlug, onSectionChange]);
+
+  if (selected) {
+    return (
+      <div className={styles.scroll}>
+        <div className={styles.detailInner}>
+          <button
+            type="button"
+            className={styles.back}
+            onClick={() => onSectionChange(null)}
+          >
+            Back to Living Legacy
+          </button>
+          <h1 className={`serif ${styles.detailTitle}`}>{selected.label}</h1>
+          <p className={styles.sub}>
+            {selected.fill}% gathered in this chapter
+          </p>
+          {selected.entries.length === 0 ? (
+            <p className={styles.empty}>Nothing gathered here yet.</p>
+          ) : (
+            <ul className={styles.entries}>
+              {selected.entries.map((e, i) => (
+                <li key={`${e.title}-${i}`} className={styles.entry}>
+                  <p className={styles.entryTitle}>{e.title}</p>
+                  <p className={styles.entryContent}>{e.content}</p>
+                  <p className={styles.entryDate}>{fmtDate(e.created_at)}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.scroll}>
       <div className={styles.column}>
@@ -74,6 +134,9 @@ export default function LegacyMap({
 
         <div className={styles.treeHero} aria-live="polite">
           <TreeMark stage={treeStage} size={200} animate />
+          <p className={styles.percent} aria-label={`Legacy progress ${storyProgress} percent`}>
+            {Math.round(storyProgress)}%
+          </p>
         </div>
 
         <p className={styles.sub}>
@@ -87,7 +150,7 @@ export default function LegacyMap({
               type="button"
               role="listitem"
               className={styles.region}
-              onClick={() => setSelected(s)}
+              onClick={() => onSectionChange(sectionToSlug(s.section))}
             >
               <span
                 className={styles.fill}
@@ -95,38 +158,13 @@ export default function LegacyMap({
                 aria-hidden
               />
               <span className={styles.regionLabel}>{s.label}</span>
+              <span className={styles.regionPct}>{Math.round(s.fill)}%</span>
             </button>
           ))}
         </div>
       </div>
-
-      {selected ? (
-        <div className={styles.detail} role="dialog" aria-label={selected.label}>
-          <div className={styles.detailInner}>
-            <button
-              type="button"
-              className={styles.back}
-              onClick={() => setSelected(null)}
-            >
-              Close
-            </button>
-            <h2 className={styles.detailTitle}>{selected.label}</h2>
-            {selected.entries.length === 0 ? (
-              <p className={styles.empty}>Nothing gathered here yet.</p>
-            ) : (
-              <ul className={styles.entries}>
-                {selected.entries.map((e, i) => (
-                  <li key={`${e.title}-${i}`} className={styles.entry}>
-                    <p className={styles.entryTitle}>{e.title}</p>
-                    <p className={styles.entryContent}>{e.content}</p>
-                    <p className={styles.entryDate}>{fmtDate(e.created_at)}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-      ) : null}
     </div>
   );
 }
+
+export { LEGACY_SECTION_LABELS };

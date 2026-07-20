@@ -54,8 +54,9 @@ export default function Home({
 
   const prompt =
     state?.oneSmallThing ??
-    "When you have a quiet moment, tell me what is on your mind.";
+    "When you have a moment, tell me what is on your mind.";
   const treeStage = state?.treeStage ?? 0;
+  const progress = Math.max(0, Math.min(100, Math.round(state?.storyProgress ?? 0)));
 
   return (
     <div className={styles.scroll}>
@@ -75,7 +76,12 @@ export default function Home({
           onClick={onOpenLegacy}
           aria-label={state?.treeSummary ?? "Your living legacy tree"}
         >
-          <TreeMark stage={treeStage} size={168} />
+          <div className={styles.treeRow}>
+            <TreeMark stage={treeStage} size={168} />
+            <span className={styles.treePercent} aria-hidden>
+              {progress}%
+            </span>
+          </div>
           <span className={styles.treeCaption}>
             {state?.treeSummary ?? "Your living legacy begins here"}
           </span>
@@ -130,7 +136,11 @@ function ReminderOptIn() {
       const reg = await navigator.serviceWorker.ready;
       const keyRes = await fetch("/api/reminders/vapid-public");
       if (!keyRes.ok) {
-        setStatus("Reminders are not configured on the server yet.");
+        setStatus(
+          keyRes.status === 503
+            ? "Reminders need a moment to finish server setup."
+            : "I could not reach the reminder service.",
+        );
         return;
       }
       const { publicKey } = (await keyRes.json()) as { publicKey: string };

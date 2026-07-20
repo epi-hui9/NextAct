@@ -14,7 +14,7 @@ export async function POST(req: Request) {
   }
 
   if (!isPasswordCorrect(password)) {
-    // Restrained, generic message — no hint about why it failed.
+    // Restrained, generic message: no hint about why it failed.
     return NextResponse.json(
       { error: "That isn't the word." },
       { status: 401 },

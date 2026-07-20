@@ -13,13 +13,13 @@ const STEPS = [
   },
   {
     title: "Your judgment becomes a living legacy.",
-    body: "As you speak honestly about your story, a quiet tree grows to mark what you have named.",
-    treeStage: 3 as const,
+    body: "As you speak honestly about your story, a living tree grows to mark what you have named.",
+    treeStage: 2 as const,
   },
   {
     title: "Begin with one honest answer.",
     body: "There is no checklist. Just one clear prompt, and a conversation that stays with you.",
-    treeStage: 4 as const,
+    treeStage: 3 as const,
   },
 ];
 

@@ -1,4 +1,4 @@
-# NextAct — Client Instrument
+# NextAct: Client Instrument
 
 A private space where an executive turns a lifetime of judgment into a living legacy.
 

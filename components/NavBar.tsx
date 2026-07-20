@@ -39,8 +39,26 @@ const ITEMS: { tab: Tab; label: string; icon: React.ReactNode }[] = [
     label: "Legacy",
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <circle cx="12" cy="12" r="7.5" stroke="currentColor" strokeWidth="1.6" />
-        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.6" />
+        <path
+          d="M12 20v-7M12 13c-3.2-1.2-5.2-3.4-5.5-6.2.9 1.1 2.2 1.8 3.6 2M12 13c3.2-1.2 5.2-3.4 5.5-6.2-.9 1.1-2.2 1.8-3.6 2"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M12 9.5c-1.4-2.2-1.6-4.2-.8-6.2.4 1.4 1.2 2.4 2.2 3.1"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M8 20h8"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
       </svg>
     ),
   },

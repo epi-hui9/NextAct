@@ -7,7 +7,7 @@ export { FIRST_MESSAGE } from "./first-message";
 /**
  * The conversation system prompt.
  *
- * Base companion voice + quietly-recalled context (L2/L3) + learned behavior
+ * Base companion voice + recalled context (L2/L3) + learned behavior
  * rules (procedural) + light style guidance. Internal mechanics (memory,
  * retrieval, tools, sources) are never revealed to the client.
  */
@@ -38,7 +38,7 @@ function renderContext(items: ContextItem[]): string {
   const lines: string[] = [];
   if (current.length) {
     lines.push(
-      "\n\nQuietly, here is what you already know about this person (use it naturally; do not recite it):",
+      "\n\nHere is what you already know about this person (use it naturally; do not recite it):",
     );
     for (const i of current) lines.push(`- ${i.text}`);
   }

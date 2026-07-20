@@ -45,7 +45,7 @@ export default function AuthGate({ demoMode = false }: { demoMode?: boolean }) {
       }
       window.location.reload();
     } catch {
-      setError("Something went quiet for a moment. Please try again.");
+      setError("Something interrupted that for a moment. Please try again.");
     } finally {
       setPending(false);
     }

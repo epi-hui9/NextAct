@@ -74,7 +74,7 @@ export async function POST(req: Request) {
           },
           JSON.stringify({
             title: "A moment for what comes next",
-            body: "Your quiet reflection is ready whenever you are.",
+            body: "Your reflection is ready whenever you are.",
           }),
         );
         delivered = true;

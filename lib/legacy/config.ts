@@ -42,7 +42,7 @@ export function countsFromStatuses(statuses: LegacyStatus[]): SectionCounts {
   return { verified, supported };
 }
 
-/** A quiet, warm home-screen update line for a section that just changed. */
+/** A warm home-screen update line for a section that just changed. */
 export function sectionUpdateLine(section: LegacySection): string {
   const label = LEGACY_SECTION_LABELS[section];
   return `Your ${label} is beginning to take shape.`;

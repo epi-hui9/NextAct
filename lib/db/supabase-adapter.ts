@@ -436,6 +436,17 @@ function createAdapter(sb: SupabaseClient): StorageAdapter {
       return mapMessage(data);
     },
 
+    async getMessage(clientId, id) {
+      const { data, error } = await sb
+        .from("messages")
+        .select("*")
+        .eq("client_id", clientId)
+        .eq("id", id)
+        .maybeSingle();
+      if (error) fail("getMessage", error);
+      return data ? mapMessage(data) : null;
+    },
+
     async listMessages(clientId, conversationId) {
       const { data, error } = await sb
         .from("messages")

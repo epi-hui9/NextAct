@@ -5,7 +5,7 @@ import { STORY_AREAS } from "@/lib/db/types";
  * Deterministic Story progress model.
  *
  * This is the single configuration file for evidence weights and status math.
- * Progress is a pure function of stored statuses — the model can never invent
+ * Progress is a pure function of stored statuses: the model can never invent
  * evidence to move the number. Never surfaced to the client as a checklist.
  */
 

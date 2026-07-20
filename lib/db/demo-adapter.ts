@@ -167,6 +167,11 @@ export const demoAdapter: StorageAdapter = {
     return clone(m);
   },
 
+  async getMessage(clientId, id) {
+    const found = db.messages.find((m) => m.client_id === clientId && m.id === id);
+    return found ? clone(found) : null;
+  },
+
   async listMessages(clientId, conversationId) {
     return clone(
       db.messages

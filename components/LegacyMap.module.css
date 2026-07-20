@@ -30,8 +30,27 @@
 
 .treeHero {
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
   margin: 8px 0 18px;
+  gap: 6px;
+}
+
+.percent {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 560;
+  color: var(--brand-navy);
+  letter-spacing: 0.02em;
+}
+
+.regionPct {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
 }
 
 .heading {
@@ -54,7 +73,9 @@
   position: relative;
   min-height: 108px;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
   padding: 12px;
   border: none;
   background: var(--brand-ivory);

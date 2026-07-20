@@ -120,7 +120,7 @@ Requirements:
 4. No tiny secondary text.
 5. No dense dashboard layout.
 6. No technical labels such as RAG, vector, agent, memory layer, skill, confidence score, or verifier.
-7. Avoid excessive cards. The interface should feel like a quiet space, not a dashboard of boxes.
+7. Avoid excessive cards. The interface should feel like a steady space, not a dashboard of boxes.
 8. Use subtle motion only. Respect prefers-reduced-motion.
 9. The keyboard must not cover the active input or send controls.
 10. The Conversation screen must remain usable in iOS Safari and standalone PWA mode.
@@ -180,7 +180,7 @@ HOME
 Home should contain only:
 
 1. A warm greeting that can use the client’s preferred name if known.
-2. A quiet Story progress indicator.
+2. A steady Story progress indicator.
 3. “One small thing for today.”
 4. One primary action that opens Conversation.
 5. A short Living Legacy map update linking to the map.

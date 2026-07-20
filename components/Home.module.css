@@ -38,6 +38,19 @@
   min-height: var(--tap);
 }
 
+.treeRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.treePercent {
+  font-size: 1.75rem;
+  font-weight: 560;
+  color: var(--brand-navy);
+  min-width: 3.2ch;
+}
+
 .treeCaption {
   font-size: 14px;
   color: var(--muted);

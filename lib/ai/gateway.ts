@@ -6,7 +6,7 @@ import type { LanguageModel } from "ai";
  *
  * Roles map to environment-configured model IDs. If a role is not separately
  * configured it falls back to the one known-good workhorse model, so the app is
- * always runnable with a single valid model. Routing is deterministic — we
+ * always runnable with a single valid model. Routing is deterministic: we
  * never make an LLM call to choose a model. No model names are invented here;
  * the default is the model already working in this repo.
  */

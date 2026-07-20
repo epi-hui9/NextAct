@@ -44,7 +44,7 @@ export async function getLegacyMap(
   });
 }
 
-/** One quiet update line, or null when nothing has changed. */
+/** One warm update line, or null when nothing has changed. */
 export async function getLegacyUpdate(clientId: string): Promise<string | null> {
   const all = await db.listLegacyEntries(clientId);
   if (all.length === 0) return null;

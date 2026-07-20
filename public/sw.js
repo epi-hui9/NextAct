@@ -1,6 +1,6 @@
 // NextAct service worker: network-first navigations, versioned caches, Web Push.
-// Register as /sw.js?v=<shortSha> so each deploy gets a fresh cache namespace.
-const BUILD_ID = new URL(self.location.href).searchParams.get("v") || "r3";
+// Waiting worker activates only after the page posts SKIP_WAITING (one-tap update).
+const BUILD_ID = new URL(self.location.href).searchParams.get("v") || "dev";
 const CACHE = `nextact-shell-${BUILD_ID}`;
 const OFFLINE_URL = "/offline.html";
 const PRECACHE = [
@@ -11,12 +11,14 @@ const PRECACHE = [
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches
-      .open(CACHE)
-      .then((cache) => cache.addAll(PRECACHE))
-      .then(() => self.skipWaiting()),
-  );
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(PRECACHE)));
+  // Do not skipWaiting here. The app shows Update NextAct first.
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("activate", (event) => {
@@ -40,17 +42,14 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(req.url);
   if (url.pathname.startsWith("/api/")) return;
 
-  // Navigations: network-first only. Never cache HTML.
   if (req.mode === "navigate") {
-    event.respondWith(
-      fetch(req).catch(() => caches.match(OFFLINE_URL)),
-    );
+    event.respondWith(fetch(req).catch(() => caches.match(OFFLINE_URL)));
   }
 });
 
 self.addEventListener("push", (event) => {
   let title = "A moment for what comes next";
-  let body = "Your quiet reflection is ready whenever you are.";
+  let body = "Your reflection is ready whenever you are.";
   try {
     if (event.data) {
       const data = event.data.json();

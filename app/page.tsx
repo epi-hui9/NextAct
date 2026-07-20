@@ -54,6 +54,8 @@ export default async function Page() {
   return (
     <AppShell
       initialOnboardingComplete={demoMode ? true : session.onboardingComplete}
+      preferredName={session.preferredName}
+      email={session.email}
     />
   );
 }

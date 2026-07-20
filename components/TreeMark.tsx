@@ -16,9 +16,9 @@ export default function TreeMark({
   size?: number;
   animate?: boolean;
 }) {
-  const canopyOpacity = [0, 0.15, 0.28, 0.45, 0.7, 1][stage];
-  const trunkHeight = [8, 22, 36, 48, 58, 66][stage];
-  const branchOpacity = stage >= 3 ? Math.min(1, (stage - 2) / 3) : 0;
+  const canopyOpacity = [0.12, 0.28, 0.45, 0.7, 1][stage];
+  const trunkHeight = [18, 28, 40, 52, 66][stage];
+  const branchOpacity = stage >= 2 ? Math.min(1, (stage - 1) / 3) : 0;
 
   return (
     <svg
@@ -39,56 +39,51 @@ export default function TreeMark({
       />
       <rect
         x="57"
-        y={102 - trunkHeight}
+        y={100 - trunkHeight}
         width="6"
         height={trunkHeight}
         rx="2"
         fill="var(--brand-navy)"
-        opacity={stage === 0 ? 0.2 : 0.85}
+        opacity={0.85}
       />
-      {stage >= 1 ? (
-        <circle
-          cx="60"
-          cy={102 - trunkHeight - 10}
-          r={10 + stage * 3}
-          fill="var(--brand-navy)"
-          opacity={canopyOpacity}
-        />
-      ) : null}
-      {stage >= 3 ? (
+      {stage >= 2 ? (
         <>
           <path
-            d={`M60 ${102 - trunkHeight + 8} C40 ${90 - stage * 4}, 28 ${70}, 32 ${58}`}
-            fill="none"
+            d="M60 70 C48 62, 36 58, 28 62"
             stroke="var(--brand-navy)"
-            strokeWidth="3"
-            strokeLinecap="round"
+            strokeWidth="2.2"
+            fill="none"
             opacity={branchOpacity}
+            strokeLinecap="round"
           />
           <path
-            d={`M60 ${102 - trunkHeight + 8} C80 ${90 - stage * 4}, 92 ${70}, 88 ${58}`}
-            fill="none"
+            d="M60 66 C72 58, 84 54, 92 58"
             stroke="var(--brand-navy)"
-            strokeWidth="3"
-            strokeLinecap="round"
+            strokeWidth="2.2"
+            fill="none"
             opacity={branchOpacity}
+            strokeLinecap="round"
           />
+        </>
+      ) : null}
+      <circle
+        cx="60"
+        cy={58 - stage * 2}
+        r={14 + stage * 4}
+        fill="var(--brand-navy)"
+        opacity={canopyOpacity}
+      />
+      {stage >= 3 ? (
+        <>
+          <circle cx="42" cy="52" r="10" fill="var(--brand-navy)" opacity={canopyOpacity * 0.85} />
+          <circle cx="78" cy="50" r="11" fill="var(--brand-navy)" opacity={canopyOpacity * 0.85} />
         </>
       ) : null}
       {stage >= 4 ? (
         <>
-          <circle cx="38" cy="52" r="12" fill="var(--brand-mist)" opacity="0.55" />
-          <circle cx="82" cy="50" r="13" fill="var(--brand-mist)" opacity="0.5" />
+          <circle cx="50" cy="40" r="9" fill="var(--brand-navy)" opacity={canopyOpacity * 0.75} />
+          <circle cx="70" cy="38" r="10" fill="var(--brand-navy)" opacity={canopyOpacity * 0.75} />
         </>
-      ) : null}
-      {stage >= 5 ? (
-        <circle
-          cx="60"
-          cy={102 - trunkHeight - 14}
-          r="28"
-          fill="var(--brand-navy)"
-          opacity="0.35"
-        />
       ) : null}
     </svg>
   );

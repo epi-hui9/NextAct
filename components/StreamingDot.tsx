@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import styles from "./StreamingDot.module.css";
 
 /**
- * A slow "breathing" amber dot — the only typing/streaming indicator.
+ * A slow "breathing" amber dot: the only typing/streaming indicator.
  * No spinner, no bouncing.
  */
 export default function StreamingDot() {

@@ -32,7 +32,7 @@ export default function PasswordGate() {
       setError(data?.error ?? "That isn't the word.");
       setPassword("");
     } catch {
-      setError("Something went quiet. Try again.");
+      setError("Something interrupted that. Try again.");
     } finally {
       setSubmitting(false);
     }

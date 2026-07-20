@@ -5,6 +5,7 @@ import {
   ACTIVE_JOURNEY_STAGE_ID,
   JOURNEY_STAGES,
 } from "@/lib/journey/stages";
+import ProgressBar from "./ProgressBar";
 import styles from "./Journey.module.css";
 
 export default function Journey({
@@ -45,15 +46,24 @@ export default function Journey({
         <ol className={styles.list}>
           {JOURNEY_STAGES.map((stage) => {
             const isActive = stage.id === ACTIVE_JOURNEY_STAGE_ID;
+            const pct = isActive ? storyProgress : 0;
             return (
               <li
                 key={stage.id}
                 className={`${styles.item} ${isActive ? styles.active : ""}`}
               >
-                <span className={styles.title}>{stage.title}</span>
-                {isActive ? (
-                  <span className={styles.badge}>{storyProgress}%</span>
-                ) : null}
+                <div className={styles.row}>
+                  <span className={styles.title}>{stage.title}</span>
+                  {isActive ? (
+                    <span className={styles.badge}>{pct}%</span>
+                  ) : (
+                    <span className={styles.locked}>Later</span>
+                  )}
+                </div>
+                <ProgressBar
+                  value={pct}
+                  label={`${stage.title} progress`}
+                />
               </li>
             );
           })}

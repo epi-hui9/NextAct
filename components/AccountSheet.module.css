@@ -12,10 +12,31 @@
   width: 100%;
   max-height: min(92dvh, 760px);
   overflow-y: auto;
-  background: var(--background);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid var(--glass-border);
   border-radius: 22px 22px 0 0;
-  padding: 18px 20px calc(20px + var(--safe-bottom));
-  box-shadow: var(--glass-shadow);
+  padding: 20px var(--page-x) calc(20px + var(--safe-bottom));
+  box-shadow: var(--shadow-2);
+  animation: sheet-up 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(12px);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet {
+    animation: none;
+  }
 }
 
 .head {
@@ -26,9 +47,9 @@
 }
 
 .lock {
-  margin: 0 0 4px;
-  font-size: 18px;
+  margin: 0 0 8px;
   color: var(--brand-navy);
+  display: flex;
 }
 
 .title {

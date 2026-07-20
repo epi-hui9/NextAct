@@ -83,9 +83,6 @@ export default function Home({
             onClick={onOpenAccount}
             aria-label="Open account"
           >
-            <span className={styles.lock} aria-hidden>
-              ⌁
-            </span>
             <span className={styles.identityText}>
               <span className={styles.identityName}>{identityLabel}</span>
               {email ? <span className={styles.identityEmail}>{email}</span> : null}
@@ -173,7 +170,7 @@ function ReminderOptIn() {
       if (!keyRes.ok) {
         setStatus(
           keyRes.status === 503
-            ? "Reminders need a moment to finish server setup."
+            ? "Reminders are finishing setup. Please try again in a minute."
             : "I could not reach the reminder service.",
         );
         return;

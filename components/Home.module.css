@@ -9,9 +9,9 @@
   width: 100%;
   max-width: var(--reading-width);
   margin: 0 auto;
-  padding: calc(12px + var(--safe-top)) 24px 40px;
-  padding-left: calc(24px + var(--safe-left));
-  padding-right: calc(24px + var(--safe-right));
+  padding: calc(12px + var(--safe-top)) var(--page-x) 48px;
+  padding-left: calc(var(--page-x) + var(--safe-left));
+  padding-right: calc(var(--page-x) + var(--safe-right));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -28,18 +28,12 @@
   align-items: center;
   gap: 10px;
   width: 100%;
-  min-height: 44px;
+  min-height: var(--tap);
   border: none;
   background: transparent;
   text-align: left;
   padding: 4px 0;
   color: var(--ink);
-}
-
-.lock {
-  font-size: 16px;
-  color: var(--brand-navy);
-  line-height: 1;
 }
 
 .identityText {
@@ -50,13 +44,13 @@
 }
 
 .identityName {
-  font-size: 0.92rem;
-  font-weight: 560;
+  font-size: var(--text-secondary);
+  font-weight: 600;
   color: var(--brand-navy);
 }
 
 .identityEmail {
-  font-size: 0.78rem;
+  font-size: var(--text-caption);
   color: var(--muted);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -64,9 +58,10 @@
 }
 
 .greeting {
-  font-size: 30px;
+  font-size: var(--text-title);
   line-height: 1.2;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   margin: 8px 0 18px;
   color: var(--ink);
 }
@@ -84,7 +79,7 @@
 }
 
 .treeCaption {
-  font-size: 15px;
+  font-size: var(--text-secondary);
   font-weight: 500;
   color: var(--brand-navy);
   max-width: 28ch;
@@ -96,7 +91,7 @@
   justify-content: center;
   gap: 10px;
   width: auto;
-  min-height: 40px;
+  min-height: var(--tap);
   margin: 0 0 22px;
   padding: 0 4px;
   border: none;
@@ -105,36 +100,37 @@
 }
 
 .stageLabel {
-  font-size: 15px;
+  font-size: var(--text-secondary);
   color: var(--muted);
 }
 
 .stagePct {
-  font-size: 1.15rem;
-  font-weight: 560;
+  font-size: var(--text-body);
+  font-weight: 600;
   color: var(--brand-navy);
-  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
 }
 
 .invite {
   width: 100%;
-  padding: 22px;
+  padding: var(--space-5);
   border: 1px solid var(--line);
-  border-radius: 18px;
+  border-radius: 16px;
   background: var(--surface);
   margin-bottom: 22px;
+  box-shadow: var(--shadow-1);
 }
 
 .inviteLabel {
-  font-size: 12px;
-  letter-spacing: 0.08em;
+  font-size: var(--text-caption);
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
   margin: 0 0 8px;
 }
 
 .inviteText {
-  font-size: 19px;
+  font-size: var(--text-body);
   line-height: 1.45;
   color: var(--ink);
   margin: 0;
@@ -147,18 +143,12 @@
   border-radius: 14px;
   background: var(--brand-navy);
   color: var(--brand-ivory);
-  font-size: 17px;
-  font-weight: 500;
-  transition: opacity 200ms ease, transform 120ms ease;
-}
-
-.primary:active {
-  transform: scale(0.99);
-  opacity: 0.92;
+  font-size: var(--text-body);
+  font-weight: 600;
 }
 
 .reminder {
-  margin-top: 28px;
+  margin-top: var(--space-8);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -169,16 +159,16 @@
 .reminderBtn {
   min-height: var(--tap);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 14px;
   background: transparent;
-  color: var(--text-secondary);
+  color: var(--muted);
   padding: 0 18px;
-  font-size: 15px;
+  font-size: var(--text-secondary);
 }
 
 .reminderStatus {
   margin: 0;
-  font-size: 14px;
-  color: var(--text-secondary);
+  font-size: var(--text-caption);
+  color: var(--muted);
   max-width: 34ch;
 }

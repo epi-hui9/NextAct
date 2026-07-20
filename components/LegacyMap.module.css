@@ -10,132 +10,135 @@
   width: 100%;
   max-width: var(--reading-width);
   margin: 0 auto;
-  padding: calc(28px + var(--safe-top)) 22px 40px;
-  padding-left: calc(22px + var(--safe-left));
-  padding-right: calc(22px + var(--safe-right));
+  padding: calc(24px + var(--safe-top)) var(--page-x) 48px;
+  padding-left: calc(var(--page-x) + var(--safe-left));
+  padding-right: calc(var(--page-x) + var(--safe-right));
 }
 
 .heading {
-  font-size: 26px;
-  font-weight: 400;
-  margin: 0 0 4px;
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-title);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: var(--ink);
 }
 
 .sub {
-  font-size: 15px;
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-secondary);
   color: var(--muted);
-  margin: 0 0 16px;
   text-align: center;
 }
 
 .treeHero {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  margin: 8px 0 18px;
-  gap: 6px;
+  margin: 0 0 var(--space-4);
 }
 
-.percent {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 560;
-  color: var(--brand-navy);
-  letter-spacing: 0.02em;
-}
-
-.regionPct {
-  position: relative;
-  z-index: 1;
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.heading {
+.puzzleHint {
+  margin: 0 0 var(--space-5);
+  font-size: var(--text-secondary);
+  color: var(--ink-soft);
   text-align: center;
 }
 
-/* One coherent landscape: a single panel split by hairlines, not cards. */
-.landscape,
-.map {
+.puzzle {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1px;
-  background: var(--line-strong);
-  border: 1px solid var(--line-strong);
-  border-radius: 20px;
-  overflow: hidden;
+  gap: 12px;
 }
 
-.region {
+.tile {
   position: relative;
-  min-height: 108px;
+  min-height: 112px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-end;
-  padding: 12px;
-  border: none;
-  background: var(--brand-ivory);
-  text-align: left;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 12px 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  color: var(--ink);
   overflow: hidden;
 }
 
-/* Odd regions taller to give the landscape an organic, non-grid feel. */
-.region:nth-child(4n + 1),
-.region:nth-child(4n) {
-  min-height: 132px;
+.tileFilled {
+  background: color-mix(in srgb, var(--brand-navy) 8%, var(--brand-ivory));
+  border-color: color-mix(in srgb, var(--brand-navy) 22%, var(--brand-mist));
 }
 
-.fill {
-  position: absolute;
-  inset: 0;
-  background: var(--brand-navy);
-  pointer-events: none;
+.tileComplete {
+  background: color-mix(in srgb, var(--brand-navy) 14%, var(--brand-ivory));
+  box-shadow: var(--shadow-1);
 }
 
-.regionLabel {
-  position: relative;
-  font-size: 14px;
-  line-height: 1.3;
-  font-weight: 500;
-  z-index: 1;
+.pieceSvg {
+  width: 56px;
+  height: 48px;
 }
 
-.detail {
-  position: absolute;
-  inset: 0;
-  background: var(--bg);
-  overflow-y: auto;
+.pieceEmpty {
+  fill: transparent;
+  stroke: var(--brand-mist);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 2.5;
+}
+
+.pieceFilled {
+  fill: var(--brand-navy);
+  stroke: var(--brand-navy);
+  stroke-width: 0.5;
+}
+
+.tileLabel {
+  font-size: var(--text-secondary);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.tilePct {
+  font-size: var(--text-caption);
+  color: var(--brand-navy);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.tileOpen {
+  font-size: var(--text-caption);
+  color: var(--muted);
 }
 
 .detailInner {
   max-width: var(--reading-width);
   margin: 0 auto;
-  padding: calc(24px + var(--safe-top)) 22px 40px;
+  padding: calc(24px + var(--safe-top)) var(--page-x) 48px;
 }
 
 .back {
-  min-height: 44px;
+  min-height: var(--tap);
   padding: 8px 0;
   background: transparent;
   border: none;
   color: var(--ink-soft);
-  font-size: 16px;
+  font-size: var(--text-secondary);
 }
 
 .detailTitle {
-  font-size: 24px;
-  font-weight: 400;
+  font-size: var(--text-subtitle);
+  font-weight: 600;
   margin: 6px 0 20px;
+  letter-spacing: -0.02em;
 }
 
 .empty {
   color: var(--muted);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: var(--text-body);
+  line-height: 1.45;
 }
 
 .entries {
@@ -153,21 +156,21 @@
 }
 
 .entryTitle {
-  font-size: 17px;
+  font-size: var(--text-body);
   font-weight: 600;
   margin: 0 0 6px;
   color: var(--ink);
 }
 
 .entryContent {
-  font-size: 16px;
-  line-height: 1.55;
+  font-size: var(--text-secondary);
+  line-height: 1.45;
   margin: 0 0 8px;
   color: var(--ink-soft);
 }
 
 .entryDate {
-  font-size: 13px;
+  font-size: var(--text-caption);
   color: var(--muted);
   margin: 0;
 }

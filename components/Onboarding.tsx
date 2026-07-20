@@ -3,20 +3,23 @@
 import { useState } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import TreeMark from "./TreeMark";
+import LockMark from "./LockMark";
 import styles from "./Onboarding.module.css";
 
 const STEPS = [
   {
-    title: "A private place for what comes next.",
-    body: "This space belongs to you. Nothing here is shared, compared, or put on display.",
-    treeStage: 1 as const,
+    kind: "vault" as const,
+    title: "Your vault stays private.",
+    body: "This is a locked space for one person. Your words, files, and Legacy never leave your account, and never cross into anyone else's.",
   },
   {
+    kind: "tree" as const,
     title: "Your judgment becomes a living legacy.",
     body: "As you speak honestly about your story, a living tree grows to mark what you have named.",
     treeStage: 2 as const,
   },
   {
+    kind: "tree" as const,
     title: "Begin with one honest answer.",
     body: "There is no checklist. Just one clear prompt, and a conversation that stays with you.",
     treeStage: 3 as const,
@@ -60,15 +63,21 @@ export default function Onboarding({ onComplete }: { onComplete: () => void }) {
         <motion.div
           key={step}
           className={styles.panel}
-          initial={reduce ? false : { opacity: 0, y: 10 }}
+          initial={reduce ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={reduce ? undefined : { opacity: 0, y: -8 }}
-          transition={{ duration: 0.35 }}
+          transition={{ duration: 0.22 }}
         >
           <div className={styles.art} aria-hidden>
-            <TreeMark stage={current.treeStage} size={180} />
+            {current.kind === "vault" ? (
+              <div className={styles.vaultMark}>
+                <LockMark size={56} />
+              </div>
+            ) : (
+              <TreeMark stage={current.treeStage} size={180} />
+            )}
           </div>
-          <h1 className={`serif ${styles.title}`}>{current.title}</h1>
+          <h1 className={styles.title}>{current.title}</h1>
           <p className={styles.body}>{current.body}</p>
         </motion.div>
       </AnimatePresence>

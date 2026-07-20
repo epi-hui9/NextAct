@@ -19,6 +19,9 @@ export async function GET() {
       process.env.VAPID_PRIVATE_KEY &&
       process.env.VAPID_SUBJECT,
   );
+  const voiceConfigured = Boolean(
+    process.env.DEEPGRAM_API_KEY || process.env.OPENAI_API_KEY,
+  );
 
   const ok = supabaseConfigured && aiConfigured;
   return NextResponse.json(
@@ -30,6 +33,7 @@ export async function GET() {
         supabase: supabaseConfigured ? "configured" : "missing",
         ai: aiConfigured ? "configured" : "missing",
         webPush: vapidConfigured ? "configured" : "missing",
+        voice: voiceConfigured ? "configured" : "browser_fallback",
       },
     },
     { status: ok ? 200 : 503 },

@@ -1,0 +1,24 @@
+.wrap {
+  width: 100%;
+  min-width: 72px;
+}
+
+.track {
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--brand-mist) 55%, var(--brand-ivory));
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--brand-navy);
+  transition: width var(--motion-enter) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    transition: none;
+  }
+}

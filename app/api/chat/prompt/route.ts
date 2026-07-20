@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
+import { conversationTitle } from "@/lib/conversation/title";
 import { resolveClientId } from "@/lib/session";
 
 export const runtime = "nodejs";
@@ -27,7 +28,7 @@ export async function POST(req: Request) {
   if (!existing) {
     await db.createConversation(
       clientId,
-      body.activePrompt.slice(0, 48),
+      conversationTitle(body.activePrompt, "Reflection"),
       body.conversationId,
     );
   }

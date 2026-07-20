@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createBrowserSupabase } from "@/lib/supabase/browser";
+import LockMark from "./LockMark";
 import styles from "./AccountSheet.module.css";
 
 interface AccountInfo {
@@ -114,7 +115,7 @@ export default function AccountSheet({
       if (!res.ok) {
         setReminderMsg(
           res.status === 503
-            ? "Reminders need a moment to finish server setup."
+            ? "Reminders are finishing setup. Please try again in a minute."
             : "I could not send a test reminder.",
         );
         return;
@@ -133,7 +134,7 @@ export default function AccountSheet({
         <header className={styles.head}>
           <div>
             <p className={styles.lock} aria-hidden>
-              ⌁
+              <LockMark size={22} />
             </p>
             <h2 className={styles.title}>{label}</h2>
             {info?.email ? <p className={styles.email}>{info.email}</p> : null}

@@ -18,6 +18,7 @@ import { checkOrdinaryResponse } from "@/lib/memory/guards";
 import { buildContext } from "@/lib/memory/retrieve";
 import { captureExchange } from "@/lib/memory/capture";
 import { db } from "@/lib/db";
+import { conversationTitle } from "@/lib/conversation/title";
 import { resolveClientId } from "@/lib/session";
 
 export const runtime = "nodejs";
@@ -119,7 +120,7 @@ export async function POST(req: Request) {
   const userText = lastUserText(messages);
   if (!userText) return new Response("Empty message", { status: 400 });
 
-  const title = userText.slice(0, 48) || "Conversation";
+  const title = conversationTitle(userText, "Conversation");
   let conversationId = parsed.conversationId ?? null;
   if (conversationId) {
     const existing = await db.getConversation(clientId, conversationId);

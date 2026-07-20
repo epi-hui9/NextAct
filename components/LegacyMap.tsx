@@ -38,6 +38,51 @@ function sectionToSlug(section: string): string {
   return section.replace(/_/g, "-");
 }
 
+/** Short labels so puzzle tiles stay readable. */
+const TILE_LABELS: Record<LegacySection, string> = {
+  personal_philosophy: "Philosophy",
+  defining_stories: "Stories",
+  judgment_and_decisions: "Judgment",
+  courage_and_turning_points: "Courage",
+  work_and_contribution: "Work",
+  people_and_relationships: "People",
+  places_and_experiences: "Places",
+  future_legacy: "Future",
+};
+
+function PuzzlePiece({
+  filled,
+  index,
+}: {
+  filled: boolean;
+  index: number;
+}) {
+  // Eight interlocking silhouettes: tab/blank variation by index.
+  const tabs = [
+    "M4 20 V8 H8 C8 4 16 4 16 8 H28 V12 C32 12 32 20 28 20 H16 C16 24 8 24 8 20 Z",
+    "M4 20 V12 C0 12 0 4 4 4 H16 C16 0 24 0 24 4 H28 V20 H16 C16 24 8 24 8 20 Z",
+    "M4 20 V8 H8 C8 4 16 4 16 8 H28 V20 H24 C24 24 16 24 16 20 H4 Z",
+    "M4 16 V4 H16 C16 0 24 0 24 4 H28 V20 H16 C16 24 8 24 8 20 H4 C0 20 0 12 4 12 Z",
+    "M4 20 V8 H16 C16 4 24 4 24 8 H28 V20 H16 C16 24 8 24 8 20 Z",
+    "M4 20 V4 H16 C16 0 24 0 24 4 H28 V12 C32 12 32 20 28 20 H8 C8 24 0 24 0 20 Z",
+    "M4 20 V8 H8 C8 4 16 4 16 8 H28 V20 H4 Z",
+    "M4 16 V4 H28 V20 H16 C16 24 8 24 8 20 H4 C0 20 0 12 4 12 Z",
+  ];
+  const d = tabs[index % tabs.length];
+  return (
+    <svg
+      className={styles.pieceSvg}
+      viewBox="0 0 32 28"
+      aria-hidden
+    >
+      <path
+        d={d}
+        className={filled ? styles.pieceFilled : styles.pieceEmpty}
+      />
+    </svg>
+  );
+}
+
 export default function LegacyMap({
   active,
   nonce,
@@ -58,6 +103,8 @@ export default function LegacyMap({
     () => sections.find((s) => s.section === selectedKey) ?? null,
     [sections, selectedKey],
   );
+
+  const placed = sections.filter((s) => s.fill >= 35).length;
 
   useEffect(() => {
     if (!active) return;
@@ -100,7 +147,7 @@ export default function LegacyMap({
           >
             Back to Living Legacy
           </button>
-          <h1 className={`serif ${styles.detailTitle}`}>{selected.label}</h1>
+          <h1 className={styles.detailTitle}>{selected.label}</h1>
           {selected.entries.length === 0 ? (
             <p className={styles.empty}>Nothing gathered here yet.</p>
           ) : (
@@ -122,34 +169,44 @@ export default function LegacyMap({
   return (
     <div className={styles.scroll}>
       <div className={styles.column}>
-        <h1 className={`serif ${styles.heading}`}>Living Legacy</h1>
+        <h1 className={styles.heading}>Living Legacy</h1>
         <p className={styles.sub}>{treeSummary}</p>
 
         <div className={styles.treeHero} aria-live="polite">
-          <TreeMark stage={treeStage} size={200} animate />
+          <TreeMark stage={treeStage} size={160} animate />
         </div>
 
-        <p className={styles.sub}>
-          Chapters gather beneath the tree as your story becomes clear.
+        <p className={styles.puzzleHint}>
+          {placed === 0
+            ? "Eight pieces. Each chapter you name locks one into place."
+            : `${placed} of 8 pieces placed.`}
         </p>
 
-        <div className={styles.landscape} role="list">
-          {sections.map((s) => (
-            <button
-              key={s.section}
-              type="button"
-              role="listitem"
-              className={styles.region}
-              onClick={() => onSectionChange(sectionToSlug(s.section))}
-            >
-              <span
-                className={styles.fill}
-                style={{ opacity: Math.min(1, s.fill / 100) }}
-                aria-hidden
-              />
-              <span className={styles.regionLabel}>{s.label}</span>
-            </button>
-          ))}
+        <div className={styles.puzzle} role="list" aria-label="Legacy puzzle">
+          {sections.map((s, i) => {
+            const filled = s.fill >= 35;
+            const complete = s.fill >= 100;
+            const label =
+              TILE_LABELS[s.section as LegacySection] ?? s.label;
+            return (
+              <button
+                key={s.section}
+                type="button"
+                role="listitem"
+                className={`${styles.tile} ${filled ? styles.tileFilled : ""} ${complete ? styles.tileComplete : ""}`}
+                onClick={() => onSectionChange(sectionToSlug(s.section))}
+                aria-label={`${s.label}, ${Math.round(s.fill)} percent`}
+              >
+                <PuzzlePiece filled={filled} index={i} />
+                <span className={styles.tileLabel}>{label}</span>
+                {filled ? (
+                  <span className={styles.tilePct}>{Math.round(s.fill)}%</span>
+                ) : (
+                  <span className={styles.tileOpen}>Open</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

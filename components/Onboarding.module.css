@@ -2,7 +2,7 @@
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  padding: calc(20px + var(--safe-top)) 24px calc(20px + var(--safe-bottom));
+  padding: calc(20px + var(--safe-top)) var(--page-x) calc(20px + var(--safe-bottom));
   background: var(--background);
 }
 
@@ -39,18 +39,34 @@
   margin-bottom: 8px;
 }
 
+.vaultMark {
+  width: 96px;
+  height: 96px;
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--brand-navy);
+  background: color-mix(in srgb, var(--brand-navy) 8%, var(--brand-ivory));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-1);
+}
+
 .title {
   margin: 0;
-  font-size: 1.7rem;
+  font-size: var(--text-subtitle);
+  font-weight: 600;
   line-height: 1.25;
-  max-width: 16ch;
+  letter-spacing: -0.02em;
+  max-width: 18ch;
 }
 
 .body {
   margin: 0;
-  color: var(--text-secondary);
-  max-width: 32ch;
-  font-size: 1.05rem;
+  color: var(--muted);
+  max-width: 34ch;
+  font-size: var(--text-body);
+  line-height: 1.45;
 }
 
 .actions {

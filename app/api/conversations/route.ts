@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { displayConversationTitle } from "@/lib/conversation/title";
 import { resolveClientId } from "@/lib/session";
 
 export const runtime = "nodejs";
@@ -14,7 +15,7 @@ export async function GET() {
   return NextResponse.json({
     conversations: rows.map((c) => ({
       id: c.id,
-      title: c.title,
+      title: displayConversationTitle(c.title),
       updatedAt: c.updated_at,
       createdAt: c.created_at,
     })),

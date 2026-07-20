@@ -1,15 +1,15 @@
 # Trusted Continuity Acceptance Matrix
 
-| Item | Root cause (pre-fix) | Status |
-| --- | --- | --- |
-| Lost connection on send | Client disconnect aborted generation; optimistic UI removed user message on error; no reconcile | Partial local fix; production verify after deploy |
-| Reminders not configured | Missing VAPID/CRON env in production | BLOCKED_BY_EXTERNAL_CREDENTIAL until VAPID env confirmed |
-| Identity / password / sign out | No Account surface | Implemented locally |
-| One-tap PWA update | SW auto skipWaiting; no Update banner | Implemented locally |
-| Legacy mixed overview/detail | Detail overlay left overview visible | Exclusive modes via `#legacy` / `#legacy/<slug>` |
-| Tree + percentage | Percentage missing on Home | Deterministic progress + stage labels |
-| Banned word quiet / em dash | Present in copy and comments | CI `scan:banned-copy` |
-| Change password | Missing | Account sheet `updateUser` |
-| Sign out | Partial | Account sheet + draft clear |
+| Item | Root cause (pre-fix) | Files | Automated test | Prod evidence | Status |
+| --- | --- | --- | --- | --- | --- |
+| Lost connection on send | Client abort canceled generation; UI removed user msg; no reconcile | `app/api/chat/route.ts`, `ConversationView.tsx`, `app/api/chat/messages/route.ts` | privacy + unit suite | Deployed `41744f1` | REQUIRES_REAL_IPHONE for interrupt path |
+| Reminders not configured | Missing VAPID/CRON | reminder routes, Vercel env | scheduler tests | health `webPush: configured`, vapid 200 | VERIFIED (server); REQUIRES_REAL_IPHONE for Home Screen push |
+| Identity / password / sign out | No Account surface | `AccountSheet.tsx`, `app/api/account`, `AppShell.tsx` | typecheck/build | Deployed | REQUIRES_REAL_IPHONE for pilot login UX |
+| One-tap PWA update | Auto skipWaiting; no banner | `public/sw.js`, `UpdateBanner.tsx`, `draft-store.ts` | `data-safety.test.ts` | Deployed SW | REQUIRES_REAL_IPHONE |
+| Legacy mixed state | Overlay left overview visible | `LegacyMap.tsx` hash modes | build | Deployed | REQUIRES_REAL_IPHONE visual |
+| Tree + percentage | Missing % | `lib/story/tree.ts`, `Home.tsx` | `tests/tree.test.ts` | Deployed | VERIFIED locally; REQUIRES_REAL_IPHONE visual |
+| Banned quiet / em dash | Present in copy | product paths + `scripts/banned-copy.mjs` | `pnpm scan:banned-copy` | CI script | VERIFIED |
+| Change password | Missing | Account sheet `updateUser` | build | Deployed | REQUIRES_REAL_IPHONE |
+| Sign out | Incomplete | Account + draft clear | build | Deployed | REQUIRES_REAL_IPHONE |
 
-Statuses allowed: VERIFIED | BLOCKED_BY_EXTERNAL_CREDENTIAL | REQUIRES_REAL_IPHONE | PLATFORM_LIMITATION
+Statuses: VERIFIED | BLOCKED_BY_EXTERNAL_CREDENTIAL | REQUIRES_REAL_IPHONE | PLATFORM_LIMITATION

@@ -13,9 +13,10 @@ Captured at sprint start and updated at delivery.
 ## After delivery
 
 - Feature branch: `cursor/trusted-continuity-sprint`
-- Production branch target: `main`
-- Final SHA: filled after merge/deploy
-- Health webPush: verify after deploy (`configured` expected once VAPID env present)
+- Production branch: `main` @ `41744f1`
+- Production `/api/version` shortSha: `41744f1` (matches Git)
+- Health: `ok: true`, supabase configured, ai configured, **webPush: configured**
+- `/api/reminders/vapid-public`: HTTP 200
 
 ## Env names present in production (values never logged)
 

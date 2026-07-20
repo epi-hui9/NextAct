@@ -6,25 +6,23 @@
 }
 
 .column {
-  position: relative;
   width: 100%;
   max-width: var(--reading-width);
   margin: 0 auto;
-  padding: calc(8px + var(--safe-top)) var(--page-x) 48px;
+  padding: calc(12px + var(--safe-top)) var(--page-x) 48px;
   padding-left: calc(var(--page-x) + var(--safe-left));
   padding-right: calc(var(--page-x) + var(--safe-right));
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  min-height: 100%;
 }
 
-.top {
+.identity {
   width: 100%;
+  margin-bottom: 8px;
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 4px;
 }
 
 .gear {
@@ -39,33 +37,87 @@
   color: var(--ink-soft);
 }
 
-.treeBg {
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin: 4px 0 8px;
-  opacity: 0.92;
-}
-
-.question {
-  margin: 12px 0 8px;
-  max-width: 18ch;
-  font-size: var(--text-subtitle);
-  line-height: 1.3;
-  font-weight: 500;
+.greeting {
+  font-size: var(--text-title);
+  line-height: 1.2;
+  font-weight: 600;
   letter-spacing: -0.02em;
+  margin: 8px 0 18px;
   color: var(--ink);
 }
 
-.greeting {
-  margin: 0 0 28px;
-  font-size: var(--text-caption);
+.treeBtn {
+  border: none;
+  background: transparent;
+  padding: 8px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+}
+
+.treeCaption {
+  font-size: var(--text-secondary);
+  font-weight: 500;
+  color: var(--brand-navy);
+  max-width: 28ch;
+}
+
+.stageBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: auto;
+  min-height: var(--tap);
+  margin: 0 0 22px;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
+}
+
+.stageLabel {
+  font-size: var(--text-secondary);
   color: var(--muted);
+}
+
+.stagePct {
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--brand-navy);
+  font-variant-numeric: tabular-nums;
+}
+
+.invite {
+  width: 100%;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  margin-bottom: 22px;
+  box-shadow: var(--shadow-1);
+}
+
+.inviteLabel {
+  font-size: var(--text-caption);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.inviteText {
+  font-size: var(--text-body);
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 0;
 }
 
 .primary {
   width: 100%;
-  max-width: 280px;
   min-height: 52px;
   border: none;
   border-radius: 14px;
@@ -73,37 +125,10 @@
   color: var(--brand-ivory);
   font-size: var(--text-body);
   font-weight: 600;
-  margin-bottom: 32px;
-}
-
-.storyTrack {
-  width: 100%;
-  max-width: 280px;
-  border: none;
-  background: transparent;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  text-align: left;
-}
-
-.storyMeta {
-  display: flex;
-  justify-content: space-between;
-  font-size: var(--text-caption);
-  color: var(--muted);
-}
-
-.storyPct {
-  font-variant-numeric: tabular-nums;
-  color: var(--ink-soft);
-  font-weight: 600;
 }
 
 .reminder {
-  margin-top: auto;
-  padding-top: 32px;
+  margin-top: var(--space-8);
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -113,13 +138,12 @@
 
 .reminderBtn {
   min-height: var(--tap);
-  border: none;
+  border: 1px solid var(--border);
+  border-radius: 14px;
   background: transparent;
   color: var(--muted);
-  padding: 0 12px;
-  font-size: var(--text-caption);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  padding: 0 18px;
+  font-size: var(--text-secondary);
 }
 
 .reminderStatus {

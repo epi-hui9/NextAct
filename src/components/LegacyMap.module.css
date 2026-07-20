@@ -34,7 +34,7 @@
 .treeHero {
   display: flex;
   justify-content: center;
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
 }
 
 .puzzleHint {
@@ -44,61 +44,73 @@
   text-align: center;
 }
 
-.boardWrap {
-  width: 100%;
-  border-radius: 4px;
-  padding: 4px;
+.puzzle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.board {
-  display: block;
-  width: 100%;
-  height: auto;
-  overflow: visible;
-  filter: drop-shadow(var(--shadow-1));
+.tile {
+  position: relative;
+  min-height: 112px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 12px 14px;
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  color: var(--ink);
+  overflow: hidden;
 }
 
-.piecePath {
-  cursor: pointer;
-  fill: var(--brand-ivory);
+.tileFilled {
+  background: color-mix(in srgb, var(--brand-navy) 8%, var(--brand-ivory));
+  border-color: color-mix(in srgb, var(--brand-navy) 22%, var(--brand-mist));
+}
+
+.tileComplete {
+  background: color-mix(in srgb, var(--brand-navy) 14%, var(--brand-ivory));
+  box-shadow: var(--shadow-1);
+}
+
+.pieceSvg {
+  width: 56px;
+  height: 48px;
+}
+
+.pieceEmpty {
+  fill: transparent;
   stroke: var(--brand-mist);
-  stroke-width: 1.6;
-  transition:
-    fill 500ms var(--ease-out),
-    stroke 500ms var(--ease-out),
-    opacity 220ms var(--ease-out);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 2.5;
 }
 
-.piecePath:focus-visible {
-  outline: 2px solid var(--focus);
-  outline-offset: 2px;
-}
-
-.pieceOn .piecePath {
-  fill: color-mix(in srgb, var(--brand-navy) 42%, var(--brand-mist));
-  stroke: color-mix(in srgb, var(--brand-navy) 70%, var(--brand-mist));
-}
-
-.pieceDone .piecePath {
+.pieceFilled {
   fill: var(--brand-navy);
   stroke: var(--brand-navy);
+  stroke-width: 0.5;
 }
 
-.pieceLabel {
-  font-size: 11px;
+.tileLabel {
+  font-size: var(--text-secondary);
   font-weight: 600;
-  fill: var(--brand-slate);
-  letter-spacing: 0.01em;
-  pointer-events: none;
+  letter-spacing: -0.01em;
 }
 
-.pieceOn .pieceLabel,
-.pieceDone .pieceLabel {
-  fill: var(--brand-ivory);
+.tilePct {
+  font-size: var(--text-caption);
+  color: var(--brand-navy);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 
-.pieceDim {
-  opacity: 0.28;
+.tileOpen {
+  font-size: var(--text-caption);
+  color: var(--muted);
 }
 
 .detailInner {
@@ -161,10 +173,4 @@
   font-size: var(--text-caption);
   color: var(--muted);
   margin: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .piecePath {
-    transition: none;
-  }
 }

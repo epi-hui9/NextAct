@@ -4,10 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import TreeMark from "./TreeMark";
 import type { TreeStage } from "@/lib/story/tree";
 import { LEGACY_SECTIONS, type LegacySection } from "@/lib/db/types";
-import {
-  LEGACY_PUZZLE_PIECES,
-  PUZZLE_VIEWBOX,
-} from "@/lib/legacy/puzzle-paths";
 import styles from "./LegacyMap.module.css";
 
 interface MapEntry {
@@ -42,6 +38,7 @@ function sectionToSlug(section: string): string {
   return section.replace(/_/g, "-");
 }
 
+/** Short labels so puzzle tiles stay readable. */
 const TILE_LABELS: Record<LegacySection, string> = {
   personal_philosophy: "Philosophy",
   defining_stories: "Stories",
@@ -52,6 +49,39 @@ const TILE_LABELS: Record<LegacySection, string> = {
   places_and_experiences: "Places",
   future_legacy: "Future",
 };
+
+function PuzzlePiece({
+  filled,
+  index,
+}: {
+  filled: boolean;
+  index: number;
+}) {
+  // Eight interlocking silhouettes: tab/blank variation by index.
+  const tabs = [
+    "M4 20 V8 H8 C8 4 16 4 16 8 H28 V12 C32 12 32 20 28 20 H16 C16 24 8 24 8 20 Z",
+    "M4 20 V12 C0 12 0 4 4 4 H16 C16 0 24 0 24 4 H28 V20 H16 C16 24 8 24 8 20 Z",
+    "M4 20 V8 H8 C8 4 16 4 16 8 H28 V20 H24 C24 24 16 24 16 20 H4 Z",
+    "M4 16 V4 H16 C16 0 24 0 24 4 H28 V20 H16 C16 24 8 24 8 20 H4 C0 20 0 12 4 12 Z",
+    "M4 20 V8 H16 C16 4 24 4 24 8 H28 V20 H16 C16 24 8 24 8 20 Z",
+    "M4 20 V4 H16 C16 0 24 0 24 4 H28 V12 C32 12 32 20 28 20 H8 C8 24 0 24 0 20 Z",
+    "M4 20 V8 H8 C8 4 16 4 16 8 H28 V20 H4 Z",
+    "M4 16 V4 H28 V20 H16 C16 24 8 24 8 20 H4 C0 20 0 12 4 12 Z",
+  ];
+  const d = tabs[index % tabs.length];
+  return (
+    <svg
+      className={styles.pieceSvg}
+      viewBox="0 0 32 28"
+      aria-hidden
+    >
+      <path
+        d={d}
+        className={filled ? styles.pieceFilled : styles.pieceEmpty}
+      />
+    </svg>
+  );
+}
 
 export default function LegacyMap({
   active,
@@ -115,9 +145,9 @@ export default function LegacyMap({
             className={styles.back}
             onClick={() => onSectionChange(null)}
           >
-            Back to the archive
+            Back to Living Legacy
           </button>
-          <h1 className={`serif ${styles.detailTitle}`}>{selected.label}</h1>
+          <h1 className={styles.detailTitle}>{selected.label}</h1>
           {selected.entries.length === 0 ? (
             <p className={styles.empty}>Nothing gathered here yet.</p>
           ) : (
@@ -136,86 +166,47 @@ export default function LegacyMap({
     );
   }
 
-  const ordered =
-    sections.length === 8
-      ? sections
-      : LEGACY_SECTIONS.map((key) => {
-          const found = sections.find((s) => s.section === key);
-          return (
-            found ?? {
-              section: key,
-              label: TILE_LABELS[key],
-              fill: 0,
-              entryCount: 0,
-              entries: [],
-            }
-          );
-        });
-
   return (
     <div className={styles.scroll}>
       <div className={styles.column}>
-        <h1 className={`serif ${styles.heading}`}>Living Legacy</h1>
+        <h1 className={styles.heading}>Living Legacy</h1>
         <p className={styles.sub}>{treeSummary}</p>
 
         <div className={styles.treeHero} aria-live="polite">
-          <TreeMark stage={treeStage} size={120} animate />
+          <TreeMark stage={treeStage} size={160} animate />
         </div>
 
         <p className={styles.puzzleHint}>
           {placed === 0
-            ? "One board. Eight pieces. Each chapter you name locks into place."
-            : `${placed} of 8 pieces in place.`}
+            ? "Eight pieces. Each chapter you name locks one into place."
+            : `${placed} of 8 pieces placed.`}
         </p>
 
-        <div className={styles.boardWrap}>
-          <svg
-            className={styles.board}
-            viewBox={PUZZLE_VIEWBOX}
-            role="list"
-            aria-label="Legacy puzzle"
-          >
-            {ordered.map((s, i) => {
-              const piece = LEGACY_PUZZLE_PIECES[i];
-              const filled = s.fill >= 35;
-              const complete = s.fill >= 100;
-              const label =
-                TILE_LABELS[s.section as LegacySection] ?? s.label;
-              const dimOthers = selectedKey != null;
-              return (
-                <g
-                  key={s.section}
-                  role="listitem"
-                  className={`${styles.piece} ${filled ? styles.pieceOn : ""} ${complete ? styles.pieceDone : ""} ${dimOthers ? styles.pieceDim : ""}`}
-                >
-                  <path
-                    d={piece.d}
-                    className={styles.piecePath}
-                    onClick={() => onSectionChange(sectionToSlug(s.section))}
-                    tabIndex={0}
-                    role="button"
-                    aria-label={s.label}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        onSectionChange(sectionToSlug(s.section));
-                      }
-                    }}
-                  />
-                  <text
-                    x={piece.cx}
-                    y={piece.cy}
-                    className={styles.pieceLabel}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    pointerEvents="none"
-                  >
-                    {label}
-                  </text>
-                </g>
-              );
-            })}
-          </svg>
+        <div className={styles.puzzle} role="list" aria-label="Legacy puzzle">
+          {sections.map((s, i) => {
+            const filled = s.fill >= 35;
+            const complete = s.fill >= 100;
+            const label =
+              TILE_LABELS[s.section as LegacySection] ?? s.label;
+            return (
+              <button
+                key={s.section}
+                type="button"
+                role="listitem"
+                className={`${styles.tile} ${filled ? styles.tileFilled : ""} ${complete ? styles.tileComplete : ""}`}
+                onClick={() => onSectionChange(sectionToSlug(s.section))}
+                aria-label={`${s.label}, ${Math.round(s.fill)} percent`}
+              >
+                <PuzzlePiece filled={filled} index={i} />
+                <span className={styles.tileLabel}>{label}</span>
+                {filled ? (
+                  <span className={styles.tilePct}>{Math.round(s.fill)}%</span>
+                ) : (
+                  <span className={styles.tileOpen}>Open</span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

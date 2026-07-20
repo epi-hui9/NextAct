@@ -2,9 +2,11 @@
 
 import styles from "./NavBar.module.css";
 
-export type Tab = "home" | "conversation" | "journey" | "legacy";
+/** Primary destinations only. Talk opens from Home, never from the tab bar. */
+export type NavTab = "home" | "journey" | "legacy";
+export type Tab = NavTab | "conversation";
 
-const ITEMS: { tab: Tab; label: string; icon: React.ReactNode }[] = [
+const ITEMS: { tab: NavTab; label: string; icon: React.ReactNode }[] = [
   {
     tab: "home",
     label: "Home",
@@ -15,20 +17,6 @@ const ITEMS: { tab: Tab; label: string; icon: React.ReactNode }[] = [
           stroke="currentColor"
           strokeWidth="1.6"
           strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    tab: "conversation",
-    label: "Talk",
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <path
-          d="M5 6h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H9l-4 3v-3H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1Z"
-          stroke="currentColor"
-          strokeWidth="1.6"
           strokeLinejoin="round"
         />
       </svg>
@@ -86,7 +74,7 @@ export default function NavBar({
   onChange,
 }: {
   tab: Tab;
-  onChange: (tab: Tab) => void;
+  onChange: (tab: NavTab) => void;
 }) {
   return (
     <nav className={styles.nav} aria-label="Primary">

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Home from "./Home";
 import Onboarding from "./Onboarding";
-import NavBar, { type Tab } from "./NavBar";
+import NavBar, { type NavTab, type Tab } from "./NavBar";
 import UpdateBanner from "./UpdateBanner";
 import AccountSheet from "./AccountSheet";
 import { clearDraft, loadDraft, saveDraft } from "@/lib/client/draft-store";
@@ -176,6 +176,33 @@ export default function AppShell({
     setTab("legacy");
   }, []);
 
+  const selectConversation = useCallback((id: string) => {
+    try {
+      window.localStorage.setItem(CONV_KEY, id);
+      window.localStorage.removeItem(PROMPT_KEY);
+    } catch {
+      /* ignore */
+    }
+    setActivePrompt(null);
+    setDraftBoot("");
+    setConversationId(id);
+    setTab("conversation");
+  }, []);
+
+  const startFreshConversation = useCallback(() => {
+    const id = crypto.randomUUID();
+    try {
+      window.localStorage.setItem(CONV_KEY, id);
+      window.localStorage.removeItem(PROMPT_KEY);
+    } catch {
+      /* ignore */
+    }
+    if (conversationId) void clearDraft(conversationId);
+    setActivePrompt(null);
+    setDraftBoot("");
+    setConversationId(id);
+  }, [conversationId]);
+
   if (!onboarded) {
     return (
       <div className={styles.shell}>
@@ -226,19 +253,9 @@ export default function AppShell({
                 setDraftBoot(text);
                 void saveDraft(conversationId, text);
               }}
-              onReset={() => {
-                const id = crypto.randomUUID();
-                try {
-                  window.localStorage.setItem(CONV_KEY, id);
-                  window.localStorage.removeItem(PROMPT_KEY);
-                } catch {
-                  /* ignore */
-                }
-                void clearDraft(conversationId);
-                setActivePrompt(null);
-                setDraftBoot("");
-                setConversationId(id);
-              }}
+              onReset={startFreshConversation}
+              onSelectConversation={selectConversation}
+              onBackHome={() => setTab("home")}
             />
           ) : null}
         </section>
@@ -248,11 +265,7 @@ export default function AppShell({
           hidden={tab !== "journey"}
           aria-hidden={tab !== "journey"}
         >
-          <Journey
-            active={tab === "journey"}
-            nonce={journeyNonce}
-            onContinueStory={() => openConversation()}
-          />
+          <Journey active={tab === "journey"} nonce={journeyNonce} />
         </section>
 
         <section
@@ -278,7 +291,14 @@ export default function AppShell({
         }}
       />
 
-      {!keyboardOpen ? <NavBar tab={tab} onChange={setTab} /> : null}
+      {!keyboardOpen && tab !== "conversation" ? (
+        <NavBar
+          tab={tab}
+          onChange={(next: NavTab) => {
+            setTab(next);
+          }}
+        />
+      ) : null}
     </div>
   );
 }

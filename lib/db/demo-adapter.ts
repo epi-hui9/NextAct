@@ -150,6 +150,14 @@ export const demoAdapter: StorageAdapter = {
     );
   },
 
+  async listConversations(clientId) {
+    return clone(
+      db.conversations
+        .filter((c) => c.client_id === clientId)
+        .sort((a, b) => b.updated_at - a.updated_at),
+    );
+  },
+
   async touchConversation(clientId, id) {
     const c = db.conversations.find(
       (x) => x.id === id && x.client_id === clientId,

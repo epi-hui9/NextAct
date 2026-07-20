@@ -36,6 +36,7 @@ export interface StorageAdapter {
     id?: string,
   ): Promise<Conversation>;
   getConversation(clientId: string, id: string): Promise<Conversation | null>;
+  listConversations(clientId: string): Promise<Conversation[]>;
   touchConversation(clientId: string, id: string): Promise<void>;
 
   addMessage(msg: Omit<StoredMessage, "created_at">): Promise<StoredMessage>;

@@ -15,6 +15,12 @@ interface UploadChip {
   note?: string;
 }
 
+interface PastConversation {
+  id: string;
+  title: string;
+  updatedAt: number;
+}
+
 function openerFor(prompt: string | null): UIMessage {
   const text = prompt
     ? `Let's stay with this: ${prompt}`
@@ -48,22 +54,36 @@ function errorCopy(error: Error | undefined): string {
     : "Something went wrong. Your words are saved. Tap to try again.";
 }
 
+function fmtWhen(ms: number): string {
+  return new Date(ms).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+}
+
 export default function ConversationView({
   conversationId,
   activePrompt,
   onReset,
+  onSelectConversation,
+  onBackHome,
   initialDraft = "",
   onDraftChange,
 }: {
   conversationId: string;
   activePrompt: string | null;
   onReset: () => void;
+  onSelectConversation: (id: string) => void;
+  onBackHome: () => void;
   initialDraft?: string;
   onDraftChange?: (text: string) => void;
 }) {
   const [input, setInput] = useState(initialDraft);
   const [notice, setNotice] = useState<string | null>(null);
   const [uploads, setUploads] = useState<UploadChip[]>([]);
+  const [pastOpen, setPastOpen] = useState(false);
+  const [past, setPast] = useState<PastConversation[]>([]);
+  const [pastLoading, setPastLoading] = useState(false);
   const lastSentRef = useRef("");
   const lastIdempotencyRef = useRef<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -75,11 +95,25 @@ export default function ConversationView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialDraft]);
 
+  useEffect(() => {
+    seededRef.current = false;
+    reconciledRef.current = false;
+    setUploads([]);
+    setPastOpen(false);
+    lastIdempotencyRef.current = null;
+  }, [conversationId]);
+
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        prepareSendMessagesRequest: ({ body, messages, id, trigger, messageId }) => ({
+        prepareSendMessagesRequest: ({
+          body,
+          messages,
+          id,
+          trigger,
+          messageId,
+        }) => ({
           body: {
             ...(body ?? {}),
             id,
@@ -108,7 +142,6 @@ export default function ConversationView({
       onError: () => {
         const saved = lastSentRef.current;
         setInput((cur) => cur || saved);
-        // Keep the optimistic user message; reconcile from server next.
         void reconcile();
       },
     });
@@ -173,6 +206,22 @@ export default function ConversationView({
   useEffect(() => {
     onDraftChange?.(input);
   }, [input, onDraftChange]);
+
+  async function openPast() {
+    setPastOpen(true);
+    setPastLoading(true);
+    try {
+      const res = await fetch("/api/conversations", { cache: "no-store" });
+      const data = res.ok
+        ? ((await res.json()) as { conversations?: PastConversation[] })
+        : null;
+      setPast(data?.conversations ?? []);
+    } catch {
+      setPast([]);
+    } finally {
+      setPastLoading(false);
+    }
+  }
 
   function submit() {
     const text = input.trim();
@@ -243,21 +292,33 @@ export default function ConversationView({
   return (
     <div className={styles.surface}>
       <header className={styles.topbar}>
-        <span className={styles.title}>Talk</span>
-        <button
-          type="button"
-          className={styles.reset}
-          onClick={() => {
-            seededRef.current = false;
-            reconciledRef.current = false;
-            setMessages([openerFor(activePrompt)]);
-            setUploads([]);
-            onReset();
-          }}
-          aria-label="Start a fresh conversation"
-        >
-          New
+        <button type="button" className={styles.back} onClick={onBackHome}>
+          Home
         </button>
+        <span className={styles.title}>Talk</span>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.reset}
+            onClick={() => void openPast()}
+          >
+            Past
+          </button>
+          <button
+            type="button"
+            className={styles.reset}
+            onClick={() => {
+              seededRef.current = false;
+              reconciledRef.current = false;
+              setMessages([openerFor(null)]);
+              setUploads([]);
+              onReset();
+            }}
+            aria-label="Start a fresh conversation"
+          >
+            New
+          </button>
+        </div>
       </header>
 
       <div ref={scrollRef} className={styles.scroll}>
@@ -313,6 +374,48 @@ export default function ConversationView({
           />
         </div>
       </div>
+
+      {pastOpen ? (
+        <div className={styles.sheet} role="dialog" aria-label="Past conversations">
+          <div className={styles.sheetInner}>
+            <div className={styles.sheetHead}>
+              <h2 className={styles.sheetTitle}>Past conversations</h2>
+              <button
+                type="button"
+                className={styles.reset}
+                onClick={() => setPastOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+            {pastLoading ? (
+              <p className={styles.empty}>Loading…</p>
+            ) : past.length === 0 ? (
+              <p className={styles.empty}>No earlier conversations yet.</p>
+            ) : (
+              <ul className={styles.pastList}>
+                {past.map((c) => (
+                  <li key={c.id}>
+                    <button
+                      type="button"
+                      className={`${styles.pastItem} ${c.id === conversationId ? styles.pastCurrent : ""}`}
+                      onClick={() => {
+                        setPastOpen(false);
+                        if (c.id !== conversationId) onSelectConversation(c.id);
+                      }}
+                    >
+                      <span className={styles.pastTitle}>
+                        {c.title.trim() || "Conversation"}
+                      </span>
+                      <span className={styles.pastWhen}>{fmtWhen(c.updatedAt)}</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -7,7 +7,18 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, extname } from "node:path";
 
 const ROOT = process.cwd();
-const ROOTS = ["app", "components", "lib", "hooks", "public", "tests", "e2e", "docs/specs"];
+const ROOTS = [
+  "app",
+  "components",
+  "lib",
+  "hooks",
+  "public",
+  "tests",
+  "e2e",
+  "docs/12-specs",
+  "docs/01-product",
+  "docs/04-ai-runtime",
+];
 const EXTS = new Set([".ts", ".tsx", ".js", ".mjs", ".css", ".md", ".json", ".html", ".svg"]);
 
 function walk(entry, out = []) {

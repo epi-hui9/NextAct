@@ -411,6 +411,16 @@ function createAdapter(sb: SupabaseClient): StorageAdapter {
       return data ? mapConversation(data) : null;
     },
 
+    async listConversations(clientId) {
+      const { data, error } = await sb
+        .from("conversations")
+        .select("*")
+        .eq("client_id", clientId)
+        .order("updated_at", { ascending: false });
+      if (error) fail("listConversations", error);
+      return (data ?? []).map(mapConversation);
+    },
+
     async touchConversation(clientId, id) {
       const { error } = await sb
         .from("conversations")

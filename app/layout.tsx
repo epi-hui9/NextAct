@@ -1,26 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
 import "./globals.css";
 import ServiceWorker from "@/components/ServiceWorker";
 
-// Warm editorial serif for the greeting and headings.
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-fraunces",
-  axes: ["opsz"],
-});
-
-// Body / UI.
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
-
 export const metadata: Metadata = {
   title: "NextAct",
-  description: "A private space to turn a lifetime of judgment into a living legacy.",
+  description:
+    "A private space to turn a lifetime of judgment into a living legacy.",
   applicationName: "NextAct",
   manifest: "/manifest.webmanifest",
   robots: { index: false, follow: false },
@@ -49,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="en">
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
       </head>

@@ -10,11 +10,10 @@ import styles from "./Journey.module.css";
 export default function Journey({
   active,
   nonce,
-  onContinueStory,
 }: {
   active: boolean;
   nonce: number;
-  onContinueStory: () => void;
+  onContinueStory?: () => void;
 }) {
   const [storyProgress, setStoryProgress] = useState(0);
 
@@ -42,48 +41,19 @@ export default function Journey({
   return (
     <div className={styles.scroll}>
       <div className={styles.column}>
-        <p className={styles.eyebrow}>Nine month path</p>
-        <h1 className={`serif ${styles.heading}`}>Your journey</h1>
-        <p className={styles.lead}>
-          Eight stages. One clear place to stand today. The rest waits until you
-          are ready.
-        </p>
-
+        <h1 className={styles.heading}>Nine month path</h1>
         <ol className={styles.list}>
-          {JOURNEY_STAGES.map((stage, index) => {
+          {JOURNEY_STAGES.map((stage) => {
             const isActive = stage.id === ACTIVE_JOURNEY_STAGE_ID;
-            const isLocked = !isActive;
             return (
               <li
                 key={stage.id}
-                className={`${styles.item} ${isActive ? styles.active : ""} ${isLocked ? styles.locked : ""}`}
+                className={`${styles.item} ${isActive ? styles.active : ""}`}
               >
-                <div className={styles.rail} aria-hidden>
-                  <span className={styles.dot} />
-                  {index < JOURNEY_STAGES.length - 1 ? (
-                    <span className={styles.line} />
-                  ) : null}
-                </div>
-                <div className={styles.body}>
-                  <div className={styles.row}>
-                    <h2 className={styles.title}>{stage.title}</h2>
-                    {isActive ? (
-                      <span className={styles.badge}>{storyProgress}%</span>
-                    ) : (
-                      <span className={styles.wait}>Later</span>
-                    )}
-                  </div>
-                  <p className={styles.summary}>{stage.summary}</p>
-                  {isActive ? (
-                    <button
-                      type="button"
-                      className={styles.cta}
-                      onClick={onContinueStory}
-                    >
-                      Continue this stage
-                    </button>
-                  ) : null}
-                </div>
+                <span className={styles.title}>{stage.title}</span>
+                {isActive ? (
+                  <span className={styles.badge}>{storyProgress}%</span>
+                ) : null}
               </li>
             );
           })}

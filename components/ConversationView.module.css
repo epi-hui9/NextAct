@@ -10,6 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: calc(10px + var(--safe-top)) 20px 10px;
   padding-left: calc(20px + var(--safe-left));
   padding-right: calc(20px + var(--safe-right));
@@ -23,14 +24,102 @@
   color: var(--ink-soft);
 }
 
+.back,
 .reset {
-  min-height: 36px;
-  padding: 6px 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 12px;
   background: transparent;
   color: var(--ink-soft);
-  font-size: 14px;
+  font-size: 15px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sheet {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--brand-navy) 28%, transparent);
+  display: flex;
+  align-items: flex-end;
+}
+
+.sheetInner {
+  width: 100%;
+  max-height: min(72dvh, 560px);
+  overflow: auto;
+  background: var(--brand-ivory);
+  border-radius: 20px 20px 0 0;
+  padding: 16px 20px calc(20px + var(--safe-bottom));
+  box-shadow: var(--shadow-2);
+}
+
+.sheetHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.sheetTitle {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.pastList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pastItem {
+  width: 100%;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+}
+
+.pastCurrent .pastTitle {
+  color: var(--brand-navy);
+  font-weight: 600;
+}
+
+.pastTitle {
+  font-size: 17px;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pastWhen {
+  flex: 0 0 auto;
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  margin: 24px 0;
+  color: var(--muted);
+  font-size: 15px;
 }
 
 .scroll {

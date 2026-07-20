@@ -1,10 +1,13 @@
-# NextAct: Client Instrument
+# NextAct
 
 A private space where an executive turns a lifetime of judgment into a living legacy.
 
-## Current production slice (Round 2)
+## Destinations
 
-The Production Trust Loop: installable HTTPS PWA, private vault sign-in, short onboarding, Home reflection → Talk continuity, remote persistence, deterministic Living Legacy tree, and opt-in 10:00 AM Web Push.
+- **Home** - identity, living tree, Story progress, today's invitation → Talk
+- **Talk** - private conversation (opened from Home only; Past / New in header)
+- **Path** - Nine month path (eight stages)
+- **Legacy** - Living Legacy map
 
 ## Quick start (local demo)
 
@@ -15,27 +18,21 @@ pnpm install
 pnpm dev
 ```
 
-Production requires Supabase. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+Production requires Supabase. See [docs/07-deployment/01-DEPLOYMENT.md](docs/07-deployment/01-DEPLOYMENT.md).
 
 ## Verify
 
 ```bash
 pnpm typecheck
 pnpm test
-pnpm test:e2e
+pnpm scan:banned-copy
 pnpm build
 ```
 
 ## Documentation
 
-- [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md)
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- [docs/REPOSITORY_MAP.md](docs/REPOSITORY_MAP.md)
-- [docs/JOURNEY.md](docs/JOURNEY.md)
-- [docs/DATA_AND_PRIVACY.md](docs/DATA_AND_PRIVACY.md)
-- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
-- [docs/PWA_IOS.md](docs/PWA_IOS.md)
-- [docs/AI_RUNTIME.md](docs/AI_RUNTIME.md)
-- [docs/TESTING.md](docs/TESTING.md)
-- [docs/rounds/](docs/rounds/)
-- [docs/specs/](docs/specs/)
+Start at [docs/00-start-here/00-INDEX.md](docs/00-start-here/00-INDEX.md).
+
+## Model
+
+Chat uses **Claude Sonnet 5** (`claude-sonnet-5`) with effort **high** by default (escalates to **max** on hard turns). Details: [docs/04-ai-runtime/01-AI_RUNTIME.md](docs/04-ai-runtime/01-AI_RUNTIME.md).

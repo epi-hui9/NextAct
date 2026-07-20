@@ -42,7 +42,8 @@ export default async function Page() {
   let session = null;
   try {
     session = await resolveSession();
-  } catch {
+  } catch (err) {
+    console.error("resolveSession failed", err);
     session = null;
   }
 

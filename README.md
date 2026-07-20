@@ -1,64 +1,39 @@
-# NextAct — Client Instrument (Round 1)
+# NextAct — Client Instrument
 
-A private, mobile-first space where an executive turns a lifetime of judgment
-into a visible living legacy, one natural conversation at a time.
+A private space where an executive turns a lifetime of judgment into a living legacy.
 
-Round 1 ships a single complete Story-stage vertical slice: **Home**,
-**Conversation** (with voice and file upload), and the **Living Legacy Map**,
-backed by four-layer memory, deterministic Story progress, and automatic
-evidence validation.
+## Current production slice (Round 2)
 
-## Run locally
+The Production Trust Loop: installable HTTPS PWA, private vault sign-in, short onboarding, Home reflection → Talk continuity, remote persistence, deterministic Living Legacy tree, and opt-in 10:00 AM Web Push.
+
+## Quick start (local demo)
 
 ```bash
 pnpm install
-pnpm dev            # http://localhost:3000
+# .env.local needs:
+# ANTHROPIC_API_KEY, GATE_PASSWORD, AUTH_SECRET, NEXTACT_ALLOW_DEMO=1
+pnpm dev
 ```
 
-Required env (`.env.local`):
-
-```
-ANTHROPIC_API_KEY=...
-GATE_PASSWORD=...        # the word to enter the app
-AUTH_SECRET=...          # long random string
-```
-
-Optional: `DEEPGRAM_API_KEY` (voice-to-text), `SUPABASE_URL` +
-`SUPABASE_SERVICE_ROLE_KEY` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` (live persistence),
-`MODEL_WORKHORSE` / `MODEL_SMALL` / `MODEL_FRONTIER` / `MODEL_VERIFIER`. See
-`.env.example`.
+Production requires Supabase. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
 ## Verify
 
 ```bash
 pnpm typecheck
-pnpm test           # vitest unit + security
-pnpm test:e2e       # Playwright, iPhone viewport (needs: playwright install)
+pnpm test
+pnpm test:e2e
 pnpm build
 ```
 
-## iPhone testing
+## Documentation
 
-Build and start on your LAN, then open the printed URL in iOS Safari and
-**Add to Home Screen** to install the PWA:
-
-```bash
-pnpm build
-pnpm start -H 0.0.0.0 -p 3000
-```
-
-## Architecture (Round 1)
-
-- **Model gateway** (`lib/ai/gateway.ts`): deterministic role routing
-  (small / workhorse / frontier / verifier), falling back to one known-good
-  model when only one is configured.
-- **Four-layer memory** (`lib/memory`, `lib/db`): episodic, semantic (with
-  supersession), procedural (separate rule library), and per-client style.
-- **Story evidence** (`lib/story`): twelve fixed areas, weighted deterministic
-  progress. Never shown as a checklist.
-- **Living Legacy** (`lib/legacy`): eight fixed sections, deterministic map fill.
-- **Storage** (`lib/db`): a `StorageAdapter` interface with a local demo adapter;
-  Supabase migrations + RLS live in `supabase/` for later provisioning.
-
-The demo adapter is local, not production privacy. Live vs demo status is stated
-in the engineering handoff.
+- [docs/PRODUCT_VISION.md](docs/PRODUCT_VISION.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/REPOSITORY_MAP.md](docs/REPOSITORY_MAP.md)
+- [docs/DATA_AND_PRIVACY.md](docs/DATA_AND_PRIVACY.md)
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- [docs/PWA_IOS.md](docs/PWA_IOS.md)
+- [docs/AI_RUNTIME.md](docs/AI_RUNTIME.md)
+- [docs/TESTING.md](docs/TESTING.md)
+- [docs/rounds/ROUND_2_EXECUTION.md](docs/rounds/ROUND_2_EXECUTION.md)

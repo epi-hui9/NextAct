@@ -24,5 +24,9 @@ export default defineConfig({
     port: PORT,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
+    env: {
+      ...process.env,
+      NEXTACT_ALLOW_DEMO: "1",
+    },
   },
 });

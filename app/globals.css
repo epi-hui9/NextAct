@@ -1,20 +1,35 @@
 :root {
-  /* Brand Color 4 — the ONLY palette. No other UI colors are permitted. */
-  --brand-navy: #10192b;
-  --brand-mist: #a9afb8;
-  --brand-cashmere: #faf9f7;
-  --brand-gray: #7a7d85;
+  /* Brand Color 3 — canonical palette */
+  --brand-navy: #0b1f3a;
+  --brand-mist: #b7c4d6;
+  --brand-ivory: #fafaf8;
+  --brand-slate: #7c8798;
 
-  /* Semantic mapping. Hierarchy comes from opacity, scale, and borders — never
-     from new hues. */
-  --bg: var(--brand-cashmere);
-  --ink: var(--brand-navy);
-  --ink-soft: color-mix(in srgb, var(--brand-navy) 62%, var(--brand-cashmere));
-  --muted: var(--brand-gray);
-  --line: color-mix(in srgb, var(--brand-mist) 55%, var(--brand-cashmere));
+  /* Semantic tokens */
+  --background: var(--brand-ivory);
+  --surface: color-mix(in srgb, var(--brand-ivory) 94%, var(--brand-navy) 6%);
+  --surface-elevated: color-mix(
+    in srgb,
+    var(--brand-ivory) 88%,
+    var(--brand-mist) 12%
+  );
+  --text-primary: var(--brand-navy);
+  --text-secondary: var(--brand-slate);
+  --border: color-mix(in srgb, var(--brand-mist) 55%, var(--brand-ivory));
+  --control: color-mix(in srgb, var(--brand-ivory) 72%, var(--brand-mist) 28%);
+  --accent: var(--brand-navy);
+  --focus: color-mix(in srgb, var(--brand-navy) 55%, var(--brand-mist));
+  --success: color-mix(in srgb, var(--brand-navy) 70%, var(--brand-mist));
+  --warning: color-mix(in srgb, var(--brand-slate) 80%, var(--brand-navy));
+
+  /* Compatibility aliases used by existing modules */
+  --bg: var(--background);
+  --ink: var(--text-primary);
+  --ink-soft: color-mix(in srgb, var(--brand-navy) 62%, var(--brand-ivory));
+  --muted: var(--text-secondary);
+  --line: var(--border);
   --line-strong: var(--brand-mist);
-  --surface: color-mix(in srgb, var(--brand-cashmere) 92%, var(--brand-navy) 2%);
-  --field: #ffffff; /* implicit white for input legibility only */
+  --field: #ffffff;
 
   --reading-width: 620px;
   --tap: 44px;
@@ -23,6 +38,10 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
+
+  --glass-bg: color-mix(in srgb, var(--brand-ivory) 78%, transparent);
+  --glass-border: color-mix(in srgb, var(--brand-mist) 45%, transparent);
+  --glass-shadow: 0 8px 24px color-mix(in srgb, var(--brand-navy) 10%, transparent);
 
   color-scheme: light;
 }
@@ -37,64 +56,58 @@ html,
 body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
-  color: var(--ink);
-  /* Never allow sideways scroll on iPhone. */
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-inter), "Avenir Next", "Segoe UI", sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
   max-width: 100%;
+  min-height: 100%;
 }
 
 body {
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
-  font-size: 17px;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
   min-height: 100dvh;
-  overscroll-behavior-y: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
 }
 
 .serif {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-optical-sizing: auto;
-}
-
-::selection {
-  background: color-mix(in srgb, var(--brand-mist) 70%, transparent);
-  color: var(--ink);
-}
-
-:where(button, textarea, input, a):focus-visible {
-  outline: 2px solid var(--brand-navy);
-  outline-offset: 2px;
-}
-
-textarea,
-input {
-  font-family: inherit;
-  font-size: 16px; /* >=16px stops iOS Safari auto-zoom on focus */
-  line-height: 1.55;
-  color: var(--ink);
-  caret-color: var(--brand-navy);
+  font-family: var(--font-fraunces), "Iowan Old Style", "Palatino Linotype", serif;
 }
 
 textarea::placeholder,
 input::placeholder {
-  color: var(--muted);
+  color: color-mix(in srgb, var(--text-secondary) 80%, transparent);
 }
 
-button {
-  font-family: inherit;
-  color: inherit;
-  cursor: pointer;
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.001ms !important;
+    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

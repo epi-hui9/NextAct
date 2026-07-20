@@ -1,9 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport, type UIMessage } from "ai";
-import { FIRST_MESSAGE } from "@/lib/ai/first-message";
 import MessageList from "./MessageList";
 import Composer from "./Composer";
 import styles from "./ConversationView.module.css";
@@ -15,34 +14,55 @@ interface UploadChip {
   note?: string;
 }
 
-const greetingMessage: UIMessage = {
-  id: "greeting",
-  role: "assistant",
-  parts: [{ type: "text", text: FIRST_MESSAGE }],
-};
+function openerFor(prompt: string | null): UIMessage {
+  const text = prompt
+    ? `Let's stay with this: ${prompt}`
+    : "I'm glad you're here. There is no agenda. What feels most true to say first?";
+  return {
+    id: "opener",
+    role: "assistant",
+    parts: [{ type: "text", text }],
+  };
+}
 
 export default function ConversationView({
   conversationId,
+  activePrompt,
   onReset,
 }: {
   conversationId: string;
+  activePrompt: string | null;
   onReset: () => void;
 }) {
-  const transport = useRef(
-    new DefaultChatTransport({
-      api: "/api/chat",
-      body: { conversationId },
-    }),
+  const [input, setInput] = useState("");
+  const [notice, setNotice] = useState<string | null>(null);
+  const [uploads, setUploads] = useState<UploadChip[]>([]);
+  const lastSentRef = useRef("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const seededRef = useRef(false);
+
+  const transport = useMemo(
+    () =>
+      new DefaultChatTransport({
+        api: "/api/chat",
+        body: { conversationId, activePrompt: activePrompt ?? undefined },
+      }),
+    [conversationId, activePrompt],
+  );
+
+  const initialMessages = useMemo(
+    () => [openerFor(activePrompt)],
+    [activePrompt],
   );
 
   const { messages, sendMessage, status, error, setMessages, clearError } =
     useChat({
       id: conversationId,
-      messages: [greetingMessage],
-      transport: transport.current,
+      messages: initialMessages,
+      transport,
       onError: () => {
-        // Preserve the person's words and gently roll back the failed turn.
-        setInput((cur) => cur || lastSentRef.current);
+        const saved = lastSentRef.current;
+        setInput((cur) => cur || saved);
         setMessages((prev) => {
           const last = prev[prev.length - 1];
           if (last?.role === "user") return prev.slice(0, -1);
@@ -51,11 +71,18 @@ export default function ConversationView({
       },
     });
 
-  const [input, setInput] = useState("");
-  const [notice, setNotice] = useState<string | null>(null);
-  const [uploads, setUploads] = useState<UploadChip[]>([]);
-  const lastSentRef = useRef("");
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // Seed remote prompt once per conversation id (avoid duplicate openers).
+  useEffect(() => {
+    if (seededRef.current || !activePrompt) return;
+    seededRef.current = true;
+    void fetch("/api/chat/prompt", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ conversationId, activePrompt }),
+    }).catch(() => {
+      /* non-blocking */
+    });
+  }, [conversationId, activePrompt]);
 
   const busy = status === "submitted" || status === "streaming";
 
@@ -74,7 +101,6 @@ export default function ConversationView({
     return () => clearTimeout(t);
   }, [notice]);
 
-  // Whenever a turn errors, restore the person's words so nothing is lost.
   useEffect(() => {
     if (error && lastSentRef.current) {
       setInput((cur) => cur || lastSentRef.current);
@@ -114,7 +140,8 @@ export default function ConversationView({
           u.map((c) => (c.key === key ? { ...c, status: "error" } : c)),
         );
         setNotice(
-          data?.error ?? "I couldn't finish that upload. Please try it once more.",
+          data?.error ??
+            "I could not finish that upload. Please try it once more.",
         );
         return;
       }
@@ -133,19 +160,20 @@ export default function ConversationView({
       setUploads((u) =>
         u.map((c) => (c.key === key ? { ...c, status: "error" } : c)),
       );
-      setNotice("I couldn't finish that upload. Please try it once more.");
+      setNotice("I could not finish that upload. Please try it once more.");
     }
   }, []);
 
   return (
     <div className={styles.surface}>
       <header className={styles.topbar}>
-        <span className={styles.title}>NextAct</span>
+        <span className={styles.title}>Talk</span>
         <button
           type="button"
           className={styles.reset}
           onClick={() => {
-            setMessages([greetingMessage]);
+            seededRef.current = false;
+            setMessages([openerFor(activePrompt)]);
             setUploads([]);
             onReset();
           }}

@@ -36,11 +36,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#10192B",
+  themeColor: "#FAFAF8",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  // Keep the layout stable; the composer handles the keyboard explicitly.
   maximumScale: 1,
 };
 
@@ -51,7 +50,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${fraunces.variable} ${inter.variable}`}>
-      <body>
+      <head>
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+      </head>
+      <body style={{ background: "#FAFAF8" }}>
         {children}
         <ServiceWorker />
       </body>

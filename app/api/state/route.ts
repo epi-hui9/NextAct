@@ -1,27 +1,32 @@
 import { NextResponse } from "next/server";
-import { resolveClientId } from "@/lib/session";
 import { db } from "@/lib/db";
+import { resolveSession } from "@/lib/session";
 import { getStoryState } from "@/lib/story/service";
 import { getLegacyUpdate } from "@/lib/legacy/service";
+import { treeStageFromProgress, TREE_STAGE_LABELS } from "@/lib/story/tree";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/** Home data: greeting, quiet progress, one small thing, one map update. */
 export async function GET() {
-  const clientId = await resolveClientId();
-  if (!clientId) return new NextResponse("Unauthorized", { status: 401 });
+  const session = await resolveSession();
+  if (!session) return new NextResponse("Unauthorized", { status: 401 });
 
   const [client, story, legacyUpdate] = await Promise.all([
-    db.getClient(clientId),
-    getStoryState(clientId),
-    getLegacyUpdate(clientId),
+    db.getClient(session.clientId),
+    getStoryState(session.clientId),
+    getLegacyUpdate(session.clientId),
   ]);
 
+  const treeStage = treeStageFromProgress(story.progress);
+
   return NextResponse.json({
-    preferredName: client?.preferred_name ?? null,
+    preferredName: client?.preferred_name ?? session.preferredName,
     storyProgress: story.progress,
     oneSmallThing: story.invitation,
     legacyUpdate,
+    treeStage,
+    treeSummary: TREE_STAGE_LABELS[treeStage],
+    onboardingComplete: session.onboardingComplete,
   });
 }

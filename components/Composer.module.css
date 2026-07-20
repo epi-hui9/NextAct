@@ -36,11 +36,20 @@
   align-items: flex-end;
   gap: 6px;
   width: 100%;
-  background: var(--field);
-  border: 1px solid var(--line-strong);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   padding: 6px 6px 6px 8px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: saturate(1.15) blur(14px);
+  -webkit-backdrop-filter: saturate(1.15) blur(14px);
   transition: border-color 200ms ease;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .composer {
+    background: var(--surface-elevated);
+  }
 }
 
 .composer:focus-within {
@@ -77,12 +86,12 @@
 
 .sendBtn {
   background: var(--brand-navy);
-  color: var(--brand-cashmere);
+  color: var(--brand-ivory);
 }
 
 .sendBtn:disabled {
   background: var(--brand-mist);
-  color: var(--brand-cashmere);
+  color: var(--brand-ivory);
 }
 
 .fileInput {
@@ -96,15 +105,20 @@
 .textarea {
   flex: 1 1 auto;
   min-width: 0;
+  min-height: 44px;
   max-height: 160px;
   align-self: center;
   background: transparent;
   border: none;
   resize: none;
   overflow-y: hidden;
-  padding: 10px 2px;
+  box-sizing: border-box;
+  padding: 11px 4px;
   margin: 0;
   display: block;
+  font-size: 16px;
+  line-height: 1.35;
+  transform: none;
   scrollbar-width: thin;
   scrollbar-color: var(--line-strong) transparent;
 }

@@ -1,13 +1,58 @@
-import { cookies } from "next/headers";
-import { AUTH_COOKIE, verifySessionToken } from "@/lib/auth";
-import PasswordGate from "@/components/PasswordGate";
+import { resolveSession } from "@/lib/session";
+import {
+  isExplicitDemoMode,
+  isSupabaseConfigured,
+} from "@/lib/supabase/env";
+import AuthGate from "@/components/AuthGate";
 import AppShell from "@/components/AppShell";
 
-// Auth state is per-request; never statically cache this page.
 export const dynamic = "force-dynamic";
 
 export default async function Page() {
-  const cookieStore = await cookies();
-  const authed = await verifySessionToken(cookieStore.get(AUTH_COOKIE)?.value);
-  return authed ? <AppShell /> : <PasswordGate />;
+  const demoMode = isExplicitDemoMode();
+  const supabaseReady = isSupabaseConfigured();
+
+  if (!supabaseReady && !demoMode) {
+    return (
+      <main
+        style={{
+          minHeight: "100dvh",
+          display: "grid",
+          placeItems: "center",
+          padding: 24,
+          background: "#FAFAF8",
+          color: "#0B1F3A",
+          textAlign: "center",
+          fontFamily: "var(--font-inter), sans-serif",
+        }}
+      >
+        <div style={{ maxWidth: 360 }}>
+          <p className="serif" style={{ fontSize: "1.6rem", marginBottom: 8 }}>
+            NextAct
+          </p>
+          <p style={{ color: "#7C8798", lineHeight: 1.5 }}>
+            This private space needs Supabase credentials before it can open.
+            See docs/DEPLOYMENT.md.
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  let session = null;
+  try {
+    session = await resolveSession();
+  } catch {
+    session = null;
+  }
+
+  if (!session) {
+    return <AuthGate demoMode={demoMode} />;
+  }
+
+  return (
+    <AppShell
+      initialOnboardingComplete={demoMode ? true : session.onboardingComplete}
+    />
+  );
 }

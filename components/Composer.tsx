@@ -161,7 +161,6 @@ export default function Composer({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Say what's on your mind."
           rows={1}
           spellCheck
           aria-label="Message"

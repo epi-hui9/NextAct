@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
 
 /**
- * PWA manifest for NextAct. Served at /manifest.webmanifest by the App Router.
- * Colors come only from Brand Color 4.
+ * Installable PWA manifest for NextAct.
+ * Launch surface uses Brand Color 3 ivory so iPhone never flashes black.
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -14,8 +14,8 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/",
     scope: "/",
     orientation: "portrait",
-    theme_color: "#10192B",
-    background_color: "#FAF9F7",
+    theme_color: "#0B1F3A",
+    background_color: "#FAFAF8",
     icons: [
       {
         src: "/icon-192.png",

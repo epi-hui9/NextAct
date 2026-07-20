@@ -1,0 +1,80 @@
+.gate {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: calc(24px + var(--safe-top)) 24px calc(24px + var(--safe-bottom));
+  background:
+    radial-gradient(
+      120% 80% at 50% -10%,
+      color-mix(in srgb, var(--brand-mist) 35%, transparent),
+      transparent 55%
+    ),
+    var(--background);
+}
+
+.card {
+  width: min(100%, 380px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.brand {
+  margin: 0;
+  font-size: 1.75rem;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 560;
+}
+
+.lead {
+  margin: 0 0 8px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+}
+
+.input {
+  min-height: var(--tap);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: var(--field);
+}
+
+.submit {
+  min-height: var(--tap);
+  border: none;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--brand-ivory);
+  font-weight: 560;
+}
+
+.submit:disabled {
+  opacity: 0.6;
+}
+
+.error {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}

@@ -7,6 +7,8 @@ import type {
   EventRecord,
   LegacyEntry,
   ProceduralMemory,
+  Profile,
+  PushSubscriptionRecord,
   SemanticMemory,
   StoredMessage,
   StoryArea,
@@ -96,4 +98,38 @@ export interface StorageAdapter {
   listLegacyEntries(clientId: string): Promise<LegacyEntry[]>;
 
   addAiRun(r: Omit<AiRun, "id" | "created_at">): Promise<void>;
+
+  getProfile(userId: string): Promise<Profile | null>;
+  upsertProfile(input: {
+    user_id: string;
+    client_id: string;
+    preferred_name?: string | null;
+    timezone?: string;
+    reminder_enabled?: boolean;
+  }): Promise<Profile>;
+  setOnboardingComplete(userId: string): Promise<void>;
+  setReminderPrefs(
+    userId: string,
+    prefs: { enabled: boolean; timezone: string },
+  ): Promise<void>;
+
+  listPushSubscriptions(userId: string): Promise<PushSubscriptionRecord[]>;
+  upsertPushSubscription(input: {
+    user_id: string;
+    endpoint: string;
+    p256dh: string;
+    auth: string;
+    user_agent?: string | null;
+  }): Promise<PushSubscriptionRecord>;
+  deletePushSubscription(userId: string, endpoint: string): Promise<void>;
+
+  setConversationPrompt(
+    clientId: string,
+    conversationId: string,
+    prompt: string,
+  ): Promise<void>;
+  getConversationPrompt(
+    clientId: string,
+    conversationId: string,
+  ): Promise<string | null>;
 }

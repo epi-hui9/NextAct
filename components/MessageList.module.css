@@ -24,7 +24,7 @@
 }
 
 .user .text {
-  background: color-mix(in srgb, var(--brand-navy) 8%, var(--brand-cashmere));
+  background: color-mix(in srgb, var(--brand-navy) 8%, var(--brand-ivory));
   border: 1px solid var(--line);
   color: var(--ink);
   border-radius: 18px 18px 4px 18px;

@@ -7,9 +7,17 @@
   padding: 6px 8px calc(6px + var(--safe-bottom));
   padding-left: calc(8px + var(--safe-left));
   padding-right: calc(8px + var(--safe-right));
-  border-top: 1px solid var(--line);
-  background: color-mix(in srgb, var(--brand-cashmere) 88%, transparent);
-  backdrop-filter: saturate(1.1) blur(8px);
+  border-top: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: saturate(1.15) blur(16px);
+  -webkit-backdrop-filter: saturate(1.15) blur(16px);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .nav {
+    background: var(--surface-elevated);
+  }
 }
 
 .item {
@@ -31,6 +39,7 @@
 
 .item.active {
   color: var(--ink);
+  background: color-mix(in srgb, var(--brand-mist) 28%, transparent);
 }
 
 .icon {

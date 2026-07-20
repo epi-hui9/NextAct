@@ -24,10 +24,22 @@
 .sub {
   font-size: 15px;
   color: var(--muted);
-  margin: 0 0 22px;
+  margin: 0 0 16px;
+  text-align: center;
+}
+
+.treeHero {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 18px;
+}
+
+.heading {
+  text-align: center;
 }
 
 /* One coherent landscape: a single panel split by hairlines, not cards. */
+.landscape,
 .map {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -45,7 +57,7 @@
   align-items: flex-end;
   padding: 12px;
   border: none;
-  background: var(--brand-cashmere);
+  background: var(--brand-ivory);
   text-align: left;
   overflow: hidden;
 }

@@ -1,14 +1,13 @@
-// NextAct service worker: network-first, so a new build is never hidden.
-// It only provides a graceful offline shell for navigations. It never caches
-// API responses and never attempts offline AI conversation.
-const CACHE = "nextact-shell-v1";
+// NextAct service worker: network-first shell + Web Push display.
+const CACHE = "nextact-shell-v2";
 const OFFLINE_URL = "/offline.html";
+const PRECACHE = [OFFLINE_URL, "/", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(CACHE)
-      .then((cache) => cache.add(OFFLINE_URL))
+      .then((cache) => cache.addAll(PRECACHE))
       .then(() => self.skipWaiting()),
   );
 });
@@ -28,10 +27,49 @@ self.addEventListener("fetch", (event) => {
   const req = event.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
-  // Never intercept private API traffic.
   if (url.pathname.startsWith("/api/")) return;
-  // Only handle full-page navigations; everything else goes straight to network.
   if (req.mode === "navigate") {
-    event.respondWith(fetch(req).catch(() => caches.match(OFFLINE_URL)));
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((cache) => cache.put(req, copy));
+          return res;
+        })
+        .catch(() => caches.match(req).then((r) => r || caches.match(OFFLINE_URL))),
+    );
   }
+});
+
+self.addEventListener("push", (event) => {
+  let title = "A moment for what comes next";
+  let body = "Your quiet reflection is ready whenever you are.";
+  try {
+    if (event.data) {
+      const data = event.data.json();
+      if (data.title) title = String(data.title);
+      if (data.body) body = String(data.body);
+    }
+  } catch {
+    /* keep defaults */
+  }
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon: "/icon-192.png",
+      badge: "/icon-192.png",
+    }),
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
+      for (const client of clients) {
+        if ("focus" in client) return client.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow("/");
+    }),
+  );
 });

@@ -30,7 +30,7 @@ test("home loads without horizontal overflow", async ({ page }) => {
 
 test("home opens the conversation", async ({ page }) => {
   await enter(page);
-  await page.getByRole("button", { name: "Continue the conversation" }).click();
+  await page.getByRole("button", { name: "Continue this reflection" }).click();
   await expect(page.getByRole("textbox", { name: "Message" })).toBeVisible();
 });
 
@@ -61,10 +61,11 @@ test("text stays in the composer after a failed request", async ({ page }) => {
 
 test("legacy map opens", async ({ page }) => {
   await enter(page);
-  await page.getByRole("button", { name: "Legacy" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Your Living Legacy" }),
-  ).toBeVisible();
+  await page
+    .getByRole("navigation", { name: "Primary" })
+    .getByRole("button", { name: "Legacy", exact: true })
+    .click();
+  await expect(page.getByRole("heading", { name: "Living Legacy" })).toBeVisible();
 });
 
 test("file picker accepts the required types", async ({ page }) => {

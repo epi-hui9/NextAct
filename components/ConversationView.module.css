@@ -75,7 +75,7 @@
   border-radius: 999px;
   font-size: 13px;
   color: var(--ink-soft);
-  background: color-mix(in srgb, var(--brand-cashmere) 60%, #ffffff);
+  background: color-mix(in srgb, var(--brand-ivory) 60%, #ffffff);
 }
 
 .chipError {

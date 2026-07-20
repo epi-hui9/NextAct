@@ -5,6 +5,18 @@
   max-width: 560px;
   margin: 0 auto;
   overflow: hidden;
+  background: var(--background);
+  padding-bottom: var(--vv-offset, 0px);
+}
+
+.keyboardOpen .content {
+  /* Keep composer in the visible visual viewport while keyboard is open. */
+  padding-bottom: 0;
+}
+
+.lazy {
+  flex: 1;
+  background: var(--background);
 }
 
 .content {

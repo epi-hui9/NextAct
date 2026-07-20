@@ -61,6 +61,31 @@ export interface Client {
   created_at: number;
 }
 
+/** Auth user profile bound to a private client vault (Round 2). */
+export interface Profile {
+  user_id: string;
+  client_id: string;
+  preferred_name: string | null;
+  onboarding_completed_at: number | null;
+  timezone: string;
+  reminder_enabled: boolean;
+  reminder_last_sent_local_date: string | null;
+  created_at: number;
+  updated_at: number;
+}
+
+/** Web Push subscription for an authenticated user. */
+export interface PushSubscriptionRecord {
+  id: string;
+  user_id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  user_agent: string | null;
+  created_at: number;
+  updated_at: number;
+}
+
 export interface ClientMembership {
   id: string;
   client_id: string;

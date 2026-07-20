@@ -13,6 +13,8 @@ import type {
   EventRecord,
   LegacyEntry,
   ProceduralMemory,
+  Profile,
+  PushSubscriptionRecord,
   SemanticMemory,
   StoredMessage,
   StoryArea,
@@ -30,7 +32,7 @@ import type {
 
 interface Tables {
   clients: Client[];
-  conversations: Conversation[];
+  conversations: (Conversation & { active_prompt?: string | null })[];
   messages: StoredMessage[];
   events: EventRecord[];
   episodic: EpisodicMemory[];
@@ -42,6 +44,8 @@ interface Tables {
   story: StoryEvidenceRecord[];
   legacy: LegacyEntry[];
   aiRuns: AiRun[];
+  profiles: Profile[];
+  pushSubscriptions: PushSubscriptionRecord[];
 }
 
 function emptyTables(): Tables {
@@ -59,6 +63,8 @@ function emptyTables(): Tables {
     story: [],
     legacy: [],
     aiRuns: [],
+    profiles: [],
+    pushSubscriptions: [],
   };
 }
 
@@ -347,5 +353,134 @@ export const demoAdapter: StorageAdapter = {
   async addAiRun(r) {
     db.aiRuns.push({ ...r, id: randomUUID(), created_at: now() });
     persist();
+  },
+
+  async getProfile(userId) {
+    return clone(db.profiles.find((p) => p.user_id === userId) ?? null);
+  },
+
+  async upsertProfile(input) {
+    const idx = db.profiles.findIndex((p) => p.user_id === input.user_id);
+    const ts = now();
+    if (idx >= 0) {
+      const existing = db.profiles[idx]!;
+      const updated: Profile = {
+        ...existing,
+        client_id: input.client_id,
+        preferred_name:
+          input.preferred_name !== undefined
+            ? input.preferred_name
+            : existing.preferred_name,
+        timezone: input.timezone ?? existing.timezone,
+        reminder_enabled: input.reminder_enabled ?? existing.reminder_enabled,
+        updated_at: ts,
+      };
+      db.profiles[idx] = updated;
+      persist();
+      return clone(updated);
+    }
+
+    const created: Profile = {
+      user_id: input.user_id,
+      client_id: input.client_id,
+      preferred_name: input.preferred_name ?? null,
+      onboarding_completed_at: null,
+      timezone: input.timezone ?? "America/Chicago",
+      reminder_enabled: input.reminder_enabled ?? false,
+      reminder_last_sent_local_date: null,
+      created_at: ts,
+      updated_at: ts,
+    };
+    db.profiles.push(created);
+    persist();
+    return clone(created);
+  },
+
+  async setOnboardingComplete(userId) {
+    const p = db.profiles.find((x) => x.user_id === userId);
+    if (p) {
+      p.onboarding_completed_at = now();
+      p.updated_at = now();
+      persist();
+    }
+  },
+
+  async setReminderPrefs(userId, prefs) {
+    const p = db.profiles.find((x) => x.user_id === userId);
+    if (p) {
+      p.reminder_enabled = prefs.enabled;
+      p.timezone = prefs.timezone;
+      p.updated_at = now();
+      persist();
+    }
+  },
+
+  async listPushSubscriptions(userId) {
+    return clone(
+      db.pushSubscriptions
+        .filter((s) => s.user_id === userId)
+        .sort((a, b) => a.created_at - b.created_at),
+    );
+  },
+
+  async upsertPushSubscription(input) {
+    const idx = db.pushSubscriptions.findIndex(
+      (s) => s.user_id === input.user_id && s.endpoint === input.endpoint,
+    );
+    const ts = now();
+    if (idx >= 0) {
+      const updated: PushSubscriptionRecord = {
+        ...db.pushSubscriptions[idx]!,
+        p256dh: input.p256dh,
+        auth: input.auth,
+        user_agent: input.user_agent ?? null,
+        updated_at: ts,
+      };
+      db.pushSubscriptions[idx] = updated;
+      persist();
+      return clone(updated);
+    }
+
+    const created: PushSubscriptionRecord = {
+      id: randomUUID(),
+      user_id: input.user_id,
+      endpoint: input.endpoint,
+      p256dh: input.p256dh,
+      auth: input.auth,
+      user_agent: input.user_agent ?? null,
+      created_at: ts,
+      updated_at: ts,
+    };
+    db.pushSubscriptions.push(created);
+    persist();
+    return clone(created);
+  },
+
+  async deletePushSubscription(userId, endpoint) {
+    const idx = db.pushSubscriptions.findIndex(
+      (s) => s.user_id === userId && s.endpoint === endpoint,
+    );
+    if (idx >= 0) {
+      db.pushSubscriptions.splice(idx, 1);
+      persist();
+    }
+  },
+
+  async setConversationPrompt(clientId, conversationId, prompt) {
+    const c = db.conversations.find(
+      (x) => x.id === conversationId && x.client_id === clientId,
+    );
+    if (c) {
+      c.active_prompt = prompt;
+      c.updated_at = now();
+      persist();
+    }
+  },
+
+  async getConversationPrompt(clientId, conversationId) {
+    const c = db.conversations.find(
+      (x) => x.id === conversationId && x.client_id === clientId,
+    );
+    return c?.active_prompt ?? null;
   },
 };

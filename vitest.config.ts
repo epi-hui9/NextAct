@@ -14,5 +14,8 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["tests/**/*.test.ts"],
+    env: {
+      NEXTACT_TEST_ADAPTER: "1",
+    },
   },
 });

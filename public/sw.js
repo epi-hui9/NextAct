@@ -1,7 +1,14 @@
-// NextAct service worker: network-first shell + Web Push display.
-const CACHE = "nextact-shell-v2";
+// NextAct service worker: network-first navigations, versioned caches, Web Push.
+// Register as /sw.js?v=<shortSha> so each deploy gets a fresh cache namespace.
+const BUILD_ID = new URL(self.location.href).searchParams.get("v") || "r3";
+const CACHE = `nextact-shell-${BUILD_ID}`;
 const OFFLINE_URL = "/offline.html";
-const PRECACHE = [OFFLINE_URL, "/", "/icon-192.png", "/icon-512.png"];
+const PRECACHE = [
+  OFFLINE_URL,
+  "/icon-192.png",
+  "/icon-512.png",
+  "/apple-touch-icon.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -17,7 +24,11 @@ self.addEventListener("activate", (event) => {
     caches
       .keys()
       .then((keys) =>
-        Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))),
+        Promise.all(
+          keys
+            .filter((k) => k.startsWith("nextact-shell-") && k !== CACHE)
+            .map((k) => caches.delete(k)),
+        ),
       )
       .then(() => self.clients.claim()),
   );
@@ -28,15 +39,11 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   if (url.pathname.startsWith("/api/")) return;
+
+  // Navigations: network-first only. Never cache HTML.
   if (req.mode === "navigate") {
     event.respondWith(
-      fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((cache) => cache.put(req, copy));
-          return res;
-        })
-        .catch(() => caches.match(req).then((r) => r || caches.match(OFFLINE_URL))),
+      fetch(req).catch(() => caches.match(OFFLINE_URL)),
     );
   }
 });
@@ -65,11 +72,13 @@ self.addEventListener("push", (event) => {
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
   event.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
-      for (const client of clients) {
-        if ("focus" in client) return client.focus();
-      }
-      if (self.clients.openWindow) return self.clients.openWindow("/");
-    }),
+    self.clients
+      .matchAll({ type: "window", includeUncontrolled: true })
+      .then((clients) => {
+        for (const client of clients) {
+          if ("focus" in client) return client.focus();
+        }
+        if (self.clients.openWindow) return self.clients.openWindow("/");
+      }),
   );
 });

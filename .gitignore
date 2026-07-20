@@ -42,4 +42,3 @@ next-env.d.ts
 # local demo data
 /.data/
 .local/
-.env*

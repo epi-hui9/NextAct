@@ -13,6 +13,7 @@ interface HomeState {
   legacyUpdate: string | null;
   treeStage: TreeStage;
   treeSummary: string;
+  journeyStage?: string;
 }
 
 function greeting(name: string | null): string {
@@ -25,13 +26,21 @@ function greeting(name: string | null): string {
 export default function Home({
   active,
   nonce,
+  preferredName = null,
+  email = null,
   onOpenConversation,
   onOpenLegacy,
+  onOpenAccount,
+  onOpenJourney,
 }: {
   active: boolean;
   nonce: number;
+  preferredName?: string | null;
+  email?: string | null;
   onOpenConversation: (prompt?: string) => void;
   onOpenLegacy: () => void;
+  onOpenAccount: () => void;
+  onOpenJourney: () => void;
 }) {
   const [state, setState] = useState<HomeState | null>(null);
   const reduce = useReducedMotion();
@@ -56,35 +65,61 @@ export default function Home({
     state?.oneSmallThing ??
     "When you have a moment, tell me what is on your mind.";
   const treeStage = state?.treeStage ?? 0;
-  const progress = Math.max(0, Math.min(100, Math.round(state?.storyProgress ?? 0)));
+  const progress = Math.max(
+    0,
+    Math.min(100, Math.round(state?.storyProgress ?? 0)),
+  );
+  const name = state?.preferredName ?? preferredName;
+  const identityLabel = name ? `${name}'s private space` : "Your private space";
+  const treeLabel = state?.treeSummary ?? "Seed";
 
   return (
     <div className={styles.scroll}>
       <div className={styles.column}>
+        <header className={styles.identity}>
+          <button
+            type="button"
+            className={styles.identityBtn}
+            onClick={onOpenAccount}
+            aria-label="Open account"
+          >
+            <span className={styles.lock} aria-hidden>
+              ⌁
+            </span>
+            <span className={styles.identityText}>
+              <span className={styles.identityName}>{identityLabel}</span>
+              {email ? <span className={styles.identityEmail}>{email}</span> : null}
+            </span>
+          </button>
+        </header>
+
         <motion.h1
           className={`serif ${styles.greeting}`}
           initial={reduce ? false : { opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: "easeOut" }}
         >
-          {greeting(state?.preferredName ?? null)}
+          {greeting(name)}
         </motion.h1>
 
         <button
           type="button"
           className={styles.treeBtn}
           onClick={onOpenLegacy}
-          aria-label={state?.treeSummary ?? "Your living legacy tree"}
+          aria-label={`Living legacy tree, ${treeLabel}`}
         >
-          <div className={styles.treeRow}>
-            <TreeMark stage={treeStage} size={168} />
-            <span className={styles.treePercent} aria-hidden>
-              {progress}%
-            </span>
-          </div>
-          <span className={styles.treeCaption}>
-            {state?.treeSummary ?? "Your living legacy begins here"}
-          </span>
+          <TreeMark stage={treeStage} size={168} />
+          <span className={styles.treeCaption}>{treeLabel}</span>
+        </button>
+
+        <button
+          type="button"
+          className={styles.stageBtn}
+          onClick={onOpenJourney}
+          aria-label={`Story stage, ${progress} percent complete`}
+        >
+          <span className={styles.stageLabel}>Story</span>
+          <span className={styles.stagePct}>{progress}%</span>
         </button>
 
         <div className={styles.invite}>

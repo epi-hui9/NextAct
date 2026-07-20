@@ -26,7 +26,8 @@ export async function GET() {
     oneSmallThing: story.invitation,
     legacyUpdate,
     treeStage,
-    treeSummary: `${TREE_STAGE_LABELS[treeStage]} · ${Math.round(story.progress)}%`,
+    treeSummary: TREE_STAGE_LABELS[treeStage],
+    journeyStage: "Story",
     onboardingComplete: session.onboardingComplete,
   });
 }

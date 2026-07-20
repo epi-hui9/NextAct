@@ -9,53 +9,6 @@
   padding-bottom: var(--vv-offset, 0px);
 }
 
-.identity {
-  flex: 0 0 auto;
-  padding: calc(8px + var(--safe-top)) 16px 0;
-  padding-left: calc(16px + var(--safe-left));
-  padding-right: calc(16px + var(--safe-right));
-}
-
-.identityBtn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  min-height: 44px;
-  border: none;
-  background: transparent;
-  text-align: left;
-  padding: 4px 0;
-  color: var(--text-primary, var(--ink));
-}
-
-.lock {
-  font-size: 16px;
-  color: var(--brand-navy);
-  line-height: 1;
-}
-
-.identityText {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-
-.identityName {
-  font-size: 0.92rem;
-  font-weight: 560;
-  color: var(--brand-navy);
-}
-
-.identityEmail {
-  font-size: 0.78rem;
-  color: var(--text-secondary, var(--muted));
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .keyboardOpen .content {
   /* Keep composer in the visible visual viewport while keyboard is open. */
   padding-bottom: 0;

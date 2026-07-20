@@ -18,6 +18,10 @@ const LegacyMap = dynamic(() => import("./LegacyMap"), {
   ssr: false,
   loading: () => <div className={styles.lazy} aria-busy="true" />,
 });
+const Journey = dynamic(() => import("./Journey"), {
+  ssr: false,
+  loading: () => <div className={styles.lazy} aria-busy="true" />,
+});
 
 const CONV_KEY = "nextact.conversationId";
 const PROMPT_KEY = "nextact.activePrompt";
@@ -41,6 +45,7 @@ function tabFromHash(): Tab {
   if (typeof window === "undefined") return "home";
   const h = window.location.hash.replace(/^#/, "");
   if (h.startsWith("legacy")) return "legacy";
+  if (h === "path" || h === "journey") return "journey";
   if (h === "talk" || h === "conversation") return "conversation";
   return "home";
 }
@@ -68,6 +73,7 @@ export default function AppShell({
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [homeNonce, setHomeNonce] = useState(0);
   const [legacyNonce, setLegacyNonce] = useState(0);
+  const [journeyNonce, setJourneyNonce] = useState(0);
   const [accountOpen, setAccountOpen] = useState(false);
   const [legacySlug, setLegacySlug] = useState<string | null>(null);
   const [draftBoot, setDraftBoot] = useState("");
@@ -106,6 +112,7 @@ export default function AppShell({
     if (prevTab.current !== tab) {
       if (tab === "home") setHomeNonce((n) => n + 1);
       if (tab === "legacy") setLegacyNonce((n) => n + 1);
+      if (tab === "journey") setJourneyNonce((n) => n + 1);
       prevTab.current = tab;
     }
     const hash =
@@ -115,7 +122,9 @@ export default function AppShell({
           : "legacy"
         : tab === "conversation"
           ? "talk"
-          : "home";
+          : tab === "journey"
+            ? "path"
+            : "home";
     if (typeof window !== "undefined") {
       const next = `#${hash}`;
       if (window.location.hash !== next) {
@@ -167,10 +176,6 @@ export default function AppShell({
     setTab("legacy");
   }, []);
 
-  const identityLabel = preferredName
-    ? `${preferredName}'s private space`
-    : "Your private space";
-
   if (!onboarded) {
     return (
       <div className={styles.shell}>
@@ -188,22 +193,6 @@ export default function AppShell({
           }
         }}
       />
-      <header className={styles.identity}>
-        <button
-          type="button"
-          className={styles.identityBtn}
-          onClick={() => setAccountOpen(true)}
-          aria-label="Open account"
-        >
-          <span className={styles.lock} aria-hidden>
-            ⌁
-          </span>
-          <span className={styles.identityText}>
-            <span className={styles.identityName}>{identityLabel}</span>
-            {email ? <span className={styles.identityEmail}>{email}</span> : null}
-          </span>
-        </button>
-      </header>
 
       <main className={styles.content}>
         <section
@@ -214,8 +203,12 @@ export default function AppShell({
           <Home
             active={tab === "home"}
             nonce={homeNonce}
+            preferredName={preferredName}
+            email={email}
             onOpenConversation={openConversation}
             onOpenLegacy={() => openLegacy(null)}
+            onOpenAccount={() => setAccountOpen(true)}
+            onOpenJourney={() => setTab("journey")}
           />
         </section>
 
@@ -248,6 +241,18 @@ export default function AppShell({
               }}
             />
           ) : null}
+        </section>
+
+        <section
+          className={styles.surface}
+          hidden={tab !== "journey"}
+          aria-hidden={tab !== "journey"}
+        >
+          <Journey
+            active={tab === "journey"}
+            nonce={journeyNonce}
+            onContinueStory={() => openConversation()}
+          />
         </section>
 
         <section

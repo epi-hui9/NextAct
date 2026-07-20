@@ -1,0 +1,142 @@
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.column {
+  width: 100%;
+  max-width: var(--reading-width);
+  margin: 0 auto;
+  padding: calc(20px + var(--safe-top)) 22px 48px;
+  padding-left: calc(22px + var(--safe-left));
+  padding-right: calc(22px + var(--safe-right));
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.heading {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.lead {
+  margin: 0 0 28px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--muted);
+  max-width: 34ch;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 14px;
+  min-height: 88px;
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 6px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line-strong);
+  flex: 0 0 auto;
+}
+
+.line {
+  width: 1px;
+  flex: 1 1 auto;
+  background: var(--line);
+  margin-top: 6px;
+}
+
+.active .dot {
+  background: var(--brand-navy);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--brand-navy) 14%, transparent);
+}
+
+.locked .dot {
+  background: var(--line);
+}
+
+.body {
+  padding-bottom: 22px;
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 560;
+  color: var(--ink);
+}
+
+.locked .title {
+  color: var(--ink-soft);
+}
+
+.badge {
+  flex: 0 0 auto;
+  font-size: 14px;
+  font-weight: 560;
+  color: var(--brand-navy);
+}
+
+.wait {
+  flex: 0 0 auto;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.summary {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--muted);
+  max-width: 36ch;
+}
+
+.cta {
+  margin-top: 12px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 12px;
+  background: var(--brand-navy);
+  color: var(--brand-ivory);
+  font-size: 15px;
+  font-weight: 500;
+}

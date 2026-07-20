@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import TreeMark from "./TreeMark";
 import type { TreeStage } from "@/lib/story/tree";
-import { LEGACY_SECTIONS, LEGACY_SECTION_LABELS, type LegacySection } from "@/lib/db/types";
+import { LEGACY_SECTIONS, type LegacySection } from "@/lib/db/types";
 import styles from "./LegacyMap.module.css";
 
 interface MapEntry {
@@ -51,8 +51,7 @@ export default function LegacyMap({
 }) {
   const [sections, setSections] = useState<MapSection[]>([]);
   const [treeStage, setTreeStage] = useState<TreeStage>(0);
-  const [storyProgress, setStoryProgress] = useState(0);
-  const [treeSummary, setTreeSummary] = useState("Seed · 0%");
+  const [treeSummary, setTreeSummary] = useState("Seed");
 
   const selectedKey = slugToSection(sectionSlug);
   const selected = useMemo(
@@ -75,9 +74,6 @@ export default function LegacyMap({
         if (cancelled) return;
         if (legacy?.sections) setSections(legacy.sections as MapSection[]);
         if (state?.treeStage != null) setTreeStage(state.treeStage as TreeStage);
-        if (typeof state?.storyProgress === "number") {
-          setStoryProgress(state.storyProgress);
-        }
         if (state?.treeSummary) setTreeSummary(String(state.treeSummary));
       })
       .catch(() => {
@@ -105,9 +101,6 @@ export default function LegacyMap({
             Back to Living Legacy
           </button>
           <h1 className={`serif ${styles.detailTitle}`}>{selected.label}</h1>
-          <p className={styles.sub}>
-            {selected.fill}% gathered in this chapter
-          </p>
           {selected.entries.length === 0 ? (
             <p className={styles.empty}>Nothing gathered here yet.</p>
           ) : (
@@ -134,9 +127,6 @@ export default function LegacyMap({
 
         <div className={styles.treeHero} aria-live="polite">
           <TreeMark stage={treeStage} size={200} animate />
-          <p className={styles.percent} aria-label={`Legacy progress ${storyProgress} percent`}>
-            {Math.round(storyProgress)}%
-          </p>
         </div>
 
         <p className={styles.sub}>
@@ -158,7 +148,6 @@ export default function LegacyMap({
                 aria-hidden
               />
               <span className={styles.regionLabel}>{s.label}</span>
-              <span className={styles.regionPct}>{Math.round(s.fill)}%</span>
             </button>
           ))}
         </div>
@@ -166,5 +155,3 @@ export default function LegacyMap({
     </div>
   );
 }
-
-export { LEGACY_SECTION_LABELS };

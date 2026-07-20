@@ -2,7 +2,7 @@
 
 import styles from "./NavBar.module.css";
 
-export type Tab = "home" | "conversation" | "legacy";
+export type Tab = "home" | "conversation" | "journey" | "legacy";
 
 const ITEMS: { tab: Tab; label: string; icon: React.ReactNode }[] = [
   {
@@ -31,6 +31,23 @@ const ITEMS: { tab: Tab; label: string; icon: React.ReactNode }[] = [
           strokeWidth="1.6"
           strokeLinejoin="round"
         />
+      </svg>
+    ),
+  },
+  {
+    tab: "journey",
+    label: "Path",
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <path
+          d="M6 19V9M12 19V5M18 19v-7"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+        />
+        <circle cx="6" cy="7" r="2" stroke="currentColor" strokeWidth="1.6" />
+        <circle cx="12" cy="3.5" r="2" stroke="currentColor" strokeWidth="1.6" />
+        <circle cx="18" cy="10" r="2" stroke="currentColor" strokeWidth="1.6" />
       </svg>
     ),
   },

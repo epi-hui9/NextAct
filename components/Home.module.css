@@ -9,13 +9,58 @@
   width: 100%;
   max-width: var(--reading-width);
   margin: 0 auto;
-  padding: calc(28px + var(--safe-top)) 24px 40px;
+  padding: calc(12px + var(--safe-top)) 24px 40px;
   padding-left: calc(24px + var(--safe-left));
   padding-right: calc(24px + var(--safe-right));
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
+
+.identity {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.identityBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 4px 0;
+  color: var(--ink);
+}
+
+.lock {
+  font-size: 16px;
+  color: var(--brand-navy);
+  line-height: 1;
+}
+
+.identityText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.identityName {
+  font-size: 0.92rem;
+  font-weight: 560;
+  color: var(--brand-navy);
+}
+
+.identityEmail {
+  font-size: 0.78rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .greeting {
@@ -30,7 +75,7 @@
   border: none;
   background: transparent;
   padding: 8px;
-  margin-bottom: 22px;
+  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,23 +83,37 @@
   min-height: var(--tap);
 }
 
-.treeRow {
+.treeCaption {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--brand-navy);
+  max-width: 28ch;
+}
+
+.stageBtn {
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: center;
+  gap: 10px;
+  width: auto;
+  min-height: 40px;
+  margin: 0 0 22px;
+  padding: 0 4px;
+  border: none;
+  background: transparent;
+  color: var(--ink);
 }
 
-.treePercent {
-  font-size: 1.75rem;
+.stageLabel {
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.stagePct {
+  font-size: 1.15rem;
   font-weight: 560;
   color: var(--brand-navy);
-  min-width: 3.2ch;
-}
-
-.treeCaption {
-  font-size: 14px;
-  color: var(--muted);
-  max-width: 28ch;
+  letter-spacing: 0.01em;
 }
 
 .invite {

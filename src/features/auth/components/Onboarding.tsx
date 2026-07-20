@@ -6,33 +6,28 @@ import TreeMark from "@/components/brand/TreeMark";
 import LockMark from "@/components/brand/LockMark";
 import styles from "./Onboarding.module.css";
 
-/**
- * North star (Introverted Intuition):
- * a private vault, simple enough not to overload,
- * where forty years of judgment become a living legacy,
- * and the present low becomes a chapter still ahead.
- */
+/** Four short beats. Title + one line. No marketing stack. */
 const STEPS = [
   {
     kind: "vault" as const,
-    title: "A private space. Yours alone.",
-    body: "NextAct is a locked vault for one executive. Nothing here is shared, compared, or put on display. Zero leakage. Zero audience.",
+    title: "Yours alone.",
+    body: "A locked vault. Nothing shared.",
   },
   {
     kind: "simple" as const,
-    title: "Keep it simple. Hold the long view.",
-    body: "The interface stays spare on purpose. One clear path at a time, so forty years of judgment can settle into focus instead of noise.",
+    title: "Kept simple.",
+    body: "One path. No clutter.",
   },
   {
     kind: "tree" as const,
-    title: "Judgment becomes a living legacy.",
-    body: "What you name here gathers into a visible archive: a tree that grows as your story takes shape, a map of a life still being written.",
+    title: "A living legacy.",
+    body: "What you name here stays and grows.",
     treeStage: 3 as const,
   },
   {
     kind: "horizon" as const,
-    title: "This low point is not the end.",
-    body: "The chapter you are in can turn toward something worth looking forward to. Begin with one honest answer.",
+    title: "Still ahead.",
+    body: "Start with one honest answer.",
     treeStage: 4 as const,
   },
 ];

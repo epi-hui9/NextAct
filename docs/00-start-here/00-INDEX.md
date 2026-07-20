@@ -8,7 +8,7 @@ If you are new to this repository, read in this order:
 | 01 | [01-product](./01-product/) | Product vision, journey path |
 | 02 | [02-architecture](./02-architecture/) | System architecture and repository map |
 | 03 | [03-data-privacy](./03-data-privacy/) | Vault, RLS, conversation reliability |
-| 04 | [04-ai-runtime](./04-ai-runtime/) | Model, effort, notifications |
+| 04 | [04-ai-runtime](./04-ai-runtime/) | Model, effort, notifications, voice STT |
 | 05 | [05-pwa](./05-pwa/) | iOS Home Screen PWA, updates, reminders |
 | 06 | [06-testing](./06-testing/) | Vitest, Playwright, banned-copy |
 | 07 | [07-deployment](./07-deployment/) | Vercel + Supabase production |

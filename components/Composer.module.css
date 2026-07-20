@@ -76,6 +76,10 @@
   opacity: 0.35;
 }
 
+.iconDisabled {
+  opacity: 0.35;
+}
+
 .iconBtn:not(:disabled):active {
   background: color-mix(in srgb, var(--brand-mist) 40%, transparent);
 }

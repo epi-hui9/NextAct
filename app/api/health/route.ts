@@ -33,7 +33,7 @@ export async function GET() {
         supabase: supabaseConfigured ? "configured" : "missing",
         ai: aiConfigured ? "configured" : "missing",
         webPush: vapidConfigured ? "configured" : "missing",
-        voice: voiceConfigured ? "configured" : "browser_fallback",
+        voice: voiceConfigured ? "configured" : "missing",
       },
     },
     { status: ok ? 200 : 503 },

@@ -6,17 +6,6 @@ export type RecorderStatus = "idle" | "recording" | "transcribing";
 
 const MAX_MS = 5 * 60 * 1000;
 
-type SpeechRec = SpeechRecognition;
-
-function getSpeechRecognition(): (new () => SpeechRec) | null {
-  if (typeof window === "undefined") return null;
-  const w = window as Window & {
-    SpeechRecognition?: new () => SpeechRec;
-    webkitSpeechRecognition?: new () => SpeechRec;
-  };
-  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
-}
-
 function pickMimeType(): string {
   if (typeof MediaRecorder === "undefined") return "";
   const candidates = [
@@ -37,30 +26,25 @@ function pickMimeType(): string {
 }
 
 /**
- * Tap-to-start / tap-to-stop voice input.
- * Prefer on-device SpeechRecognition (works on iPhone Safari PWA).
- * Fall back to MediaRecorder + /api/transcribe when needed.
- * Never auto-sends.
+ * Tap-to-start / tap-to-stop recording, then upload for Deepgram or Whisper.
+ * Never uses browser SpeechRecognition. Never auto-sends.
  */
 export function useRecorder(opts: {
   onTranscript: (text: string) => void;
   onError: (message: string) => void;
+  enabled?: boolean;
 }) {
-  const { onTranscript, onError } = opts;
+  const { onTranscript, onError, enabled = true } = opts;
   const [status, setStatus] = useState<RecorderStatus>("idle");
   const [elapsedMs, setElapsedMs] = useState(0);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
-  const speechRef = useRef<SpeechRec | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
-  const interimRef = useRef("");
-  const finalRef = useRef("");
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const capRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startedAtRef = useRef(0);
   const mountedRef = useRef(true);
-  const modeRef = useRef<"speech" | "media" | null>(null);
 
   const cleanup = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -72,18 +56,6 @@ export function useRecorder(opts: {
       streamRef.current = null;
     }
     recorderRef.current = null;
-    if (speechRef.current) {
-      try {
-        speechRef.current.onresult = null;
-        speechRef.current.onerror = null;
-        speechRef.current.onend = null;
-        speechRef.current.stop();
-      } catch {
-        /* ignore */
-      }
-      speechRef.current = null;
-    }
-    modeRef.current = null;
   }, []);
 
   useEffect(() => {
@@ -99,7 +71,7 @@ export function useRecorder(opts: {
     };
   }, [cleanup]);
 
-  const transcribeBlob = useCallback(
+  const transcribe = useCallback(
     async (blob: Blob) => {
       if (blob.size === 0) {
         setStatus("idle");
@@ -121,15 +93,17 @@ export function useRecorder(opts: {
         const data = (await res.json().catch(() => null)) as {
           transcript?: string;
           error?: string;
+          code?: string;
         } | null;
         if (!mountedRef.current) return;
         if (!res.ok || !data) {
-          onError(
-            data?.error ??
-              (res.status === 503
-                ? "Voice typing needs a quick server setup. Please try again soon."
-                : "I couldn't turn that into words."),
-          );
+          if (res.status === 503 || data?.code === "stt_unconfigured") {
+            onError(
+              "Voice typing is unavailable right now. Please type your message.",
+            );
+          } else {
+            onError(data?.error ?? "I couldn't turn that into words.");
+          }
         } else if (data.transcript?.trim()) {
           onTranscript(data.transcript.trim());
         } else {
@@ -147,15 +121,6 @@ export function useRecorder(opts: {
   );
 
   const stop = useCallback(() => {
-    if (modeRef.current === "speech" && speechRef.current) {
-      try {
-        speechRef.current.stop();
-      } catch {
-        cleanup();
-        setStatus("idle");
-      }
-      return;
-    }
     const rec = recorderRef.current;
     if (rec && rec.state !== "inactive") {
       try {
@@ -167,63 +132,21 @@ export function useRecorder(opts: {
     }
   }, [cleanup]);
 
-  const startSpeech = useCallback((): boolean => {
-    const Ctor = getSpeechRecognition();
-    if (!Ctor) return false;
-    const rec = new Ctor();
-    rec.continuous = true;
-    rec.interimResults = true;
-    rec.lang = "en-US";
-    interimRef.current = "";
-    finalRef.current = "";
-    speechRef.current = rec;
-    modeRef.current = "speech";
-
-    rec.onresult = (event: SpeechRecognitionEvent) => {
-      let interim = "";
-      let finalText = finalRef.current;
-      for (let i = event.resultIndex; i < event.results.length; i += 1) {
-        const result = event.results[i];
-        const piece = result[0]?.transcript ?? "";
-        if (result.isFinal) finalText += piece;
-        else interim += piece;
-      }
-      finalRef.current = finalText;
-      interimRef.current = interim;
-    };
-    rec.onerror = (event: SpeechRecognitionErrorEvent) => {
-      if (event.error === "aborted" || event.error === "no-speech") return;
-      cleanup();
-      if (mountedRef.current) {
-        setStatus("idle");
-        onError("I couldn't hear that clearly. Please try again.");
-      }
-    };
-    rec.onend = () => {
-      const text = `${finalRef.current} ${interimRef.current}`.trim();
-      cleanup();
-      if (!mountedRef.current) return;
-      if (text) onTranscript(text);
-      else onError("I didn't catch any words there. Please try again.");
-      setStatus("idle");
-    };
-
-    try {
-      rec.start();
-    } catch {
-      cleanup();
-      return false;
+  const start = useCallback(async () => {
+    if (!enabled) {
+      onError(
+        "Voice typing is unavailable right now. Please type your message.",
+      );
+      return;
     }
-    return true;
-  }, [cleanup, onError, onTranscript]);
-
-  const startMedia = useCallback(async (): Promise<boolean> => {
+    if (status !== "idle") return;
     if (
       typeof navigator === "undefined" ||
       !navigator.mediaDevices?.getUserMedia ||
       typeof MediaRecorder === "undefined"
     ) {
-      return false;
+      onError("Voice input isn't available in this browser.");
+      return;
     }
     let stream: MediaStream;
     try {
@@ -238,11 +161,11 @@ export function useRecorder(opts: {
       onError(
         "I couldn't reach the microphone. You can allow access in Settings and try again.",
       );
-      return false;
+      return;
     }
     if (!mountedRef.current) {
       stream.getTracks().forEach((t) => t.stop());
-      return false;
+      return;
     }
 
     streamRef.current = stream;
@@ -256,11 +179,11 @@ export function useRecorder(opts: {
         rec = new MediaRecorder(stream);
       } catch {
         cleanup();
-        return false;
+        onError("Voice input isn't supported here.");
+        return;
       }
     }
     recorderRef.current = rec;
-    modeRef.current = "media";
 
     rec.ondataavailable = (e) => {
       if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
@@ -276,37 +199,23 @@ export function useRecorder(opts: {
       const type = mimeType || chunksRef.current[0]?.type || "audio/mp4";
       const blob = new Blob(chunksRef.current, { type });
       cleanup();
-      void transcribeBlob(blob);
+      void transcribe(blob);
     };
 
+    startedAtRef.current = Date.now();
+    setElapsedMs(0);
     try {
       rec.start(1000);
     } catch {
       rec.start();
     }
-    return true;
-  }, [cleanup, onError, transcribeBlob]);
-
-  const start = useCallback(async () => {
-    if (status !== "idle") return;
-
-    startedAtRef.current = Date.now();
-    setElapsedMs(0);
     setStatus("recording");
+
     timerRef.current = setInterval(() => {
       setElapsedMs(Date.now() - startedAtRef.current);
     }, 200);
     capRef.current = setTimeout(stop, MAX_MS);
-
-    if (startSpeech()) return;
-
-    const ok = await startMedia();
-    if (!ok && mountedRef.current) {
-      cleanup();
-      setStatus("idle");
-      onError("Voice input isn't available in this browser.");
-    }
-  }, [status, startSpeech, startMedia, stop, cleanup, onError]);
+  }, [enabled, status, onError, cleanup, transcribe, stop]);
 
   return { status, elapsedMs, start, stop };
 }

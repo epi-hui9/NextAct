@@ -8,21 +8,34 @@ const MAX_AUDIO_BYTES = 25 * 1024 * 1024;
 const DEEPGRAM_URL =
   "https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&punctuate=true";
 
+function sttProvider(): "deepgram" | "whisper" | null {
+  if (process.env.DEEPGRAM_API_KEY) return "deepgram";
+  if (process.env.OPENAI_API_KEY) return "whisper";
+  return null;
+}
+
+/** Availability probe for the Composer mic (no secrets returned). */
+export async function GET() {
+  const provider = sttProvider();
+  return NextResponse.json({
+    available: Boolean(provider),
+    provider: provider ?? null,
+  });
+}
+
 /**
- * Transcribe a recorded audio clip.
- * Prefer Deepgram; fall back to OpenAI Whisper when DEEPGRAM_API_KEY is unset.
- * Never invent a transcript.
+ * Transcribe a recorded audio clip with Deepgram or OpenAI Whisper only.
+ * No browser SpeechRecognition. Never invent a transcript.
  */
 export async function POST(req: Request) {
   const clientId = await resolveClientId();
   if (!clientId) return new NextResponse("Unauthorized", { status: 401 });
 
-  const deepgram = process.env.DEEPGRAM_API_KEY;
-  const openai = process.env.OPENAI_API_KEY;
-  if (!deepgram && !openai) {
+  const provider = sttProvider();
+  if (!provider) {
     return NextResponse.json(
       {
-        error: "Voice typing isn't set up on this device yet.",
+        error: "Voice typing is unavailable right now. Please type your message.",
         code: "stt_unconfigured",
       },
       { status: 503 },
@@ -54,10 +67,11 @@ export async function POST(req: Request) {
   }
 
   try {
-    const transcript = deepgram
-      ? await withDeepgram(deepgram, audio)
-      : await withOpenAI(openai!, audio);
-    return NextResponse.json({ transcript });
+    const transcript =
+      provider === "deepgram"
+        ? await withDeepgram(process.env.DEEPGRAM_API_KEY!, audio)
+        : await withOpenAI(process.env.OPENAI_API_KEY!, audio);
+    return NextResponse.json({ transcript, provider });
   } catch {
     return NextResponse.json(
       { error: "I couldn't turn that into words. Please try again." },
@@ -89,7 +103,8 @@ async function withDeepgram(key: string, audio: File): Promise<string> {
 
 async function withOpenAI(key: string, audio: File): Promise<string> {
   const body = new FormData();
-  const name = audio.name || (audio.type.includes("mp4") ? "clip.mp4" : "clip.webm");
+  const name =
+    audio.name || (audio.type.includes("mp4") ? "clip.mp4" : "clip.webm");
   body.append("file", audio, name);
   body.append("model", "whisper-1");
   body.append("response_format", "json");

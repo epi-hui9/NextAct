@@ -2,8 +2,10 @@
 
 import {
   useCallback,
+  useEffect,
   useLayoutEffect,
   useRef,
+  useState,
   type ChangeEvent,
   type KeyboardEvent,
 } from "react";
@@ -13,6 +15,9 @@ import styles from "./Composer.module.css";
 const MAX_HEIGHT = 160;
 const ACCEPT =
   ".pdf,.txt,.md,.png,.jpg,.jpeg,application/pdf,text/plain,text/markdown,image/png,image/jpeg";
+
+const VOICE_UNAVAILABLE =
+  "Voice typing is unavailable right now. Please type your message.";
 
 function fmt(ms: number): string {
   const total = Math.floor(ms / 1000);
@@ -40,6 +45,22 @@ export default function Composer({
   const fileRef = useRef<HTMLInputElement>(null);
   const valueRef = useRef(value);
   valueRef.current = value;
+  const [voiceReady, setVoiceReady] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/transcribe", { method: "GET", cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { available?: boolean } | null) => {
+        if (!cancelled) setVoiceReady(Boolean(data?.available));
+      })
+      .catch(() => {
+        if (!cancelled) setVoiceReady(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const appendTranscript = useCallback(
     (text: string) => {
@@ -53,6 +74,7 @@ export default function Composer({
   const recorder = useRecorder({
     onTranscript: appendTranscript,
     onError: onNotice,
+    enabled: voiceReady === true,
   });
 
   useLayoutEffect(() => {
@@ -80,6 +102,17 @@ export default function Composer({
   const recording = recorder.status === "recording";
   const transcribing = recorder.status === "transcribing";
   const canSend = value.trim().length > 0 && !disabled && !recording;
+  const voiceEnabled = voiceReady === true;
+  const voicePending = voiceReady === null;
+
+  function onMicClick() {
+    if (!voiceEnabled) {
+      onNotice(VOICE_UNAVAILABLE);
+      return;
+    }
+    if (recording) recorder.stop();
+    else void recorder.start();
+  }
 
   return (
     <div className={styles.wrap}>
@@ -98,11 +131,19 @@ export default function Composer({
       <div className={styles.composer}>
         <button
           type="button"
-          className={`${styles.iconBtn} ${recording ? styles.stop : ""}`}
-          aria-label={recording ? "Stop recording" : "Record voice"}
+          className={`${styles.iconBtn} ${recording ? styles.stop : ""} ${!voiceEnabled && !voicePending ? styles.iconDisabled : ""}`}
+          aria-label={
+            recording
+              ? "Stop recording"
+              : voiceEnabled
+                ? "Record voice"
+                : "Voice typing unavailable"
+          }
           aria-pressed={recording}
-          onClick={() => (recording ? recorder.stop() : recorder.start())}
-          disabled={transcribing || disabled}
+          aria-disabled={!voiceEnabled}
+          title={voiceEnabled ? "Record voice" : VOICE_UNAVAILABLE}
+          onClick={onMicClick}
+          disabled={transcribing || disabled || voicePending}
         >
           {recording ? (
             <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden>
